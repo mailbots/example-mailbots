@@ -1,14 +1,16 @@
 {
   "name": "gopher-skills-kit",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha",
   "description": "A simple Node app built on Express, instantly up and running.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "ngrok": "ngrok http 3011 --subdomain=gopher-skills-kit-local"
   },
   "dependencies": {
     "express": "^4.16.3",
-    "gopher-app": "^0.0.5-beta"
+    "gopher-app": "^0.0.6-beta"
   },
   "engines": {
     "node": "8.x"
