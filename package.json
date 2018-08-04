@@ -9,8 +9,9 @@
     "ngrok": "ngrok http 3011 --subdomain=gopher-skills-kit-local"
   },
   "dependencies": {
+    "dotenv": "6.0.0",
     "express": "^4.16.3",
-    "gopher-app": "^0.0.6-beta"
+    "gopher-app": "^0.0.7-beta"
   },
   "engines": {
     "node": "8.x"
