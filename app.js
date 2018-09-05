@@ -13,7 +13,7 @@ gopherApp.onCommand("hello", function(gopher) {
 });
 
 // ...or load them from a directory
-gopherApp.loadSkills(__dirname + "/example-skills/");
+gopherApp.loadSkill(__dirname + "/example-skills/");
 
 // Start Gopher listening (call this last)
 gopherApp.listen();

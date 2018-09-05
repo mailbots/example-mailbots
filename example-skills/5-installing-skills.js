@@ -9,10 +9,15 @@ module.exports = function(gopherApp) {
    *
    * TODO: Add gopher-memorize to package.json after published.
    */
-  // const memorizeSkill = require("gopher-memorize");
-  // gopherApp.use(memorizeSkill);
+  const memorizeSkill = require("gopher-memorize");
+  gopherApp.app.use(
+    memorizeSkill({
+      defaultFrequencyPref: 1,
+      frequencyPrefOptions: [0.2, 0.5, 1, 1.5, 2, 5, 100]
+    })
+  );
   gopherApp.onCommand("remember", function(gopher) {
-    // gopher.skills.memorize.start();
+    gopher.skills.memorize.memorizeTask();
     gopher.webhook.addEmail({
       to: gopher.get("source.from"),
       from: "Gopher Remember",
@@ -28,6 +33,10 @@ module.exports = function(gopherApp) {
           triggering in action. View source to see how it's done.</p>
           <hr />`
         },
+        ...gopher.skills.memorize.renderMemorizationControls(),
+        {
+          type: "section"
+        },
         {
           type: "title",
           text: gopher.get("task.reference_email.subject")
@@ -38,7 +47,7 @@ module.exports = function(gopherApp) {
   });
 
   gopherApp.on("task.triggered", function(gopher) {
-    // gopher.skills.memorize.memorizeTask();
+    gopher.skills.memorize.memorizeTask();
     gopher.webhook.addEmail({
       to: gopher.get("source.from"),
       from: "Gopher Memorize",

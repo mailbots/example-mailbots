@@ -16,5 +16,5 @@ module.exports = function(gopherApp) {
   }
 
   // Adds the Gopher Skill, making it available for all subsequent skills
-  gopherApp.use(logUserEmail);
+  gopherApp.app.use(logUserEmail);
 };
