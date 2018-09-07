@@ -1,6 +1,6 @@
 {
   "name": "gopher-skills-kit",
-  "version": "0.0.2-alpha",
+  "version": "0.0.3-alpha",
   "description": "A simple Node app built on Express, instantly up and running.",
   "main": "app.js",
   "scripts": {
@@ -11,8 +11,8 @@
   "dependencies": {
     "dotenv": "6.0.0",
     "express": "^4.16.3",
-    "gopher-app": "^0.0.13-beta",
-    "gopher-memorize": "0.0.2-alpha"
+    "gopher-app": "^0.0.14-beta",
+    "gopher-memorize": "0.0.4-alpha"
   },
   "engines": {
     "node": "8.x"
