@@ -11,7 +11,7 @@
   "dependencies": {
     "dotenv": "6.0.0",
     "express": "^4.16.3",
-    "gopher-app": "^0.0.14-beta",
+    "gopher-app": "^0.0.15-beta",
     "gopher-memorize": "0.0.4-alpha"
   },
   "engines": {

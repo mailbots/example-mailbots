@@ -4,20 +4,13 @@ module.exports = function(gopherApp) {
    * this skill automatically set reminders for a task using
    * spaced repetition - a memorization technique that sets
    * reminders at increatingly longer intervals each time.
-   * Published skills can connect to APIs, set reminders,
-   * export custom UI components and more.
-   *
-   * TODO: Add gopher-memorize to package.json after published.
+   * Skills can connect to APIs, set reminders, export custom
+   * UI elements and handle their own settings.
    */
-  const memorizeSkill = require("gopher-memorize");
-  gopherApp.app.use(
-    memorizeSkill({
-      defaultFrequencyPref: 1,
-      frequencyPrefOptions: [0.2, 0.5, 1, 1.5, 2, 5, 100]
-    })
-  );
+  var memorize = require("gopher-memorize")(gopherApp);
+
   gopherApp.onCommand("remember", function(gopher) {
-    gopher.skills.memorize.memorizeTask();
+    memorize.memorizeTask(gopher);
     gopher.webhook.addEmail({
       to: gopher.get("source.from"),
       from: "Gopher Remember",
@@ -33,7 +26,7 @@ module.exports = function(gopherApp) {
           triggering in action. View source to see how it's done.</p>
           <hr />`
         },
-        ...gopher.skills.memorize.renderMemorizationControls(),
+        ...memorize.renderMemorizationControls(gopher),
         {
           type: "section"
         },
@@ -47,7 +40,7 @@ module.exports = function(gopherApp) {
   });
 
   gopherApp.on("task.triggered", function(gopher) {
-    gopher.skills.memorize.memorizeTask();
+    memorize.memorizeTask(gopher);
     gopher.webhook.addEmail({
       to: gopher.get("source.from"),
       from: "Gopher Memorize",
@@ -62,7 +55,8 @@ module.exports = function(gopherApp) {
         {
           type: "title",
           text: gopher.get("task.reference_email.subject")
-        }
+        },
+        ...memorize.renderMemorizationControls(gopher)
       ]
     });
     gopher.webhook.respond();
