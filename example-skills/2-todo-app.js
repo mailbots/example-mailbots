@@ -121,8 +121,6 @@ module.exports = function(gopherApp) {
   });
 
   /**
-   * TODO: Date format helpers, action-token to create
-   * email-based actions on each task.
    * The user emails view@my-todo-app.gopher.email
    * to view their outstanding reminders
    */
@@ -311,7 +309,7 @@ module.exports = function(gopherApp) {
    * handler. Find out about making reusable components here:
    * https://github.com/gopherhq/gopher-app#making-reusable-skills
    */
-  gopherApp.on("task.viewed", function(gopher) {
+  gopherApp.onTaskViewed("todo", function(gopher) {
     gopher.webhook.addEmail({
       to: gopher.get("source.from"),
       from: "Gopher Todo",
