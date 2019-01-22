@@ -1,13 +1,13 @@
-module.exports = function(gopherApp) {
+module.exports = function(mailbot) {
   /**
    * Someone can either forward an email, cc or bcc
-   * todo@your-app.gopher.email to create a new todo
+   * todo@your-app.mailbots.com to create a new todo
    */
-  gopherApp.onCommand("todo", function(gopher) {
-    gopher.webhook.addEmail({
-      to: gopher.get("source.from"),
-      from: "Gopher Todo",
-      subject: gopher.get("task.reference_email.subject"),
+  mailbot.onCommand("todo", function(bot) {
+    bot.webhook.addEmail({
+      to: bot.get("source.from"),
+      from: "MailBots Todo",
+      subject: bot.get("task.reference_email.subject"),
       body: [
         {
           type: "html",
@@ -19,7 +19,7 @@ module.exports = function(gopherApp) {
         {
           type: "html",
           text: `<h1>
-                    Todo: ${gopher.get("task.reference_email.subject")}
+                    Todo: ${bot.get("task.reference_email.subject")}
                 </h1>`
         },
         {
@@ -29,12 +29,12 @@ module.exports = function(gopherApp) {
           style: "primary",
           subject: "Hit Send to Complete this task",
           body:
-            "This is a Gopher email-action, a way to get stuff done without leaving your inbox."
+            "This is a MailBots email-action, a way to get stuff done without leaving your inbox."
         },
         {
           type: "button",
           text: "View Task",
-          url: `https://app.gopher.email/task/${gopher.get("task.id")}`
+          url: `https://app.mailbots.com/task/${bot.get("task.id")}`
         },
         {
           type: "html",
@@ -42,7 +42,7 @@ module.exports = function(gopherApp) {
                 <tr>
                     <td>
                         <h4>NOTES</h4>
-                        <p>${gopher.webhook.getTaskData(
+                        <p>${bot.webhook.getTaskData(
                           "notes",
                           "Add notes to this todo below"
                         )}</p>
@@ -97,18 +97,18 @@ module.exports = function(gopherApp) {
       ]
     });
 
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 
   /**
    * Handle schedule reminder action
    */
-  gopherApp.onAction(/remind/, function(gopher) {
-    const actionParts = gopher.action.split(".");
+  mailbot.onAction(/remind/, function(bot) {
+    const actionParts = bot.action.split(".");
     const reminderTime = actionParts[1];
-    gopher.webhook.setTriggerTime(reminderTime);
-    gopher.webhook.addEmail({
-      to: gopher.get("source.from"),
+    bot.webhook.setTriggerTime(reminderTime);
+    bot.webhook.addEmail({
+      to: bot.get("source.from"),
       subject: "Reminder Scheduled",
       body: [
         {
@@ -117,16 +117,16 @@ module.exports = function(gopherApp) {
         }
       ]
     });
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 
   /**
-   * The user emails view@my-todo-app.gopher.email
+   * The user emails view@my-todo-app.mailbots.com
    * to view their outstanding reminders
    */
-  gopherApp.onCommand("my-todos", async function(gopher) {
+  mailbot.onCommand("my-todos", async function(bot) {
     try {
-      const allTasks = await gopher.api.getTasks();
+      const allTasks = await bot.api.getTasks();
       let pendingTasksHtml = "";
       allTasks.tasks.forEach(task => {
         pendingTasksHtml += `
@@ -134,9 +134,9 @@ module.exports = function(gopherApp) {
           <p>${task.reference_email.to}</p>
           `;
       });
-      const email = gopher.webhook.addEmail({
-        to: gopher.get("source.from"),
-        from: "Gopher Todo",
+      const email = bot.webhook.addEmail({
+        to: bot.get("source.from"),
+        from: "MailBots Todo",
         subject: "Pending Todos",
         body: [
           {
@@ -152,23 +152,23 @@ module.exports = function(gopherApp) {
     } catch (e) {
       debugger;
     }
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 
   /**
    * Handle add notes action
    */
-  gopherApp.onAction("add_notes", function(gopher) {
-    // Save note data in Gopher. You can also save
+  mailbot.onAction("add_notes", function(bot) {
+    // Save note data in MailBots. You can also save
     // notes against the todo list API.
-    var existingNotes = gopher.webhook.getTaskData("notes", "");
-    var addNotes = gopher.get("source.html") || gopher.get("source.text");
+    var existingNotes = bot.webhook.getTaskData("notes", "");
+    var addNotes = bot.get("source.html") || bot.get("source.text");
     var newNote = existingNotes + addNotes;
-    gopher.webhook.setTaskData({ notes: newNote });
+    bot.webhook.setTaskData({ notes: newNote });
 
     // Send confirmation email
-    gopher.webhook.addEmail({
-      to: gopher.get("source.from"),
+    bot.webhook.addEmail({
+      to: bot.get("source.from"),
       subject: "Notes Added",
       body: [
         {
@@ -181,19 +181,19 @@ module.exports = function(gopherApp) {
         }
       ]
     });
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 
   /**
    * Handle complete reminder action
    */
-  gopherApp.onAction("complete", function(gopher) {
+  mailbot.onAction("complete", function(bot) {
     // Complete task in Todoist.
-    const reminderData = gopher.webhook.completeTask();
+    const reminderData = bot.webhook.completeTask();
     console.log(reminderData);
 
-    gopher.webhook.addEmail({
-      to: gopher.get("source.from"),
+    bot.webhook.addEmail({
+      to: bot.get("source.from"),
       subject: "Task Completed",
       body: [
         {
@@ -202,7 +202,7 @@ module.exports = function(gopherApp) {
         }
       ]
     });
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 
   /**
@@ -211,17 +211,17 @@ module.exports = function(gopherApp) {
    *
    * NOTE: This is nearly identical to the above onCommand
    * handler. Find out about making reusable components here:
-   * https://github.com/gopherhq/gopher-app#making-reusable-skills
+   * https://github.com/mailbots/mailbots#making-reusable-skills
    */
-  gopherApp.onTrigger("todo", function(gopher) {
-    gopher.webhook.addEmail({
-      to: gopher.get("source.from"),
-      subject: "Reminder: " + gopher.get("task.reference_email.subject"),
+  mailbot.onTrigger("todo", function(bot) {
+    bot.webhook.addEmail({
+      to: bot.get("source.from"),
+      subject: "Reminder: " + bot.get("task.reference_email.subject"),
       body: [
         {
           type: "html",
           text: `<h1>
-                    Todo: ${gopher.get("task.reference_email.subject")}
+                    Todo: ${bot.get("task.reference_email.subject")}
                 </h1>`
         },
         {
@@ -231,7 +231,7 @@ module.exports = function(gopherApp) {
           style: "primary",
           subject: "Hit Send to Complete this task",
           body:
-            "This is a Gopher email-action, a way to get stuff done without leaving your inbox."
+            "This is a MailBots email-action, a way to get stuff done without leaving your inbox."
         },
         {
           type: "button",
@@ -244,7 +244,7 @@ module.exports = function(gopherApp) {
                 <tr>
                     <td>
                         <h4>NOTES</h4>
-                        <p>${gopher.webhook.getTaskData(
+                        <p>${bot.webhook.getTaskData(
                           "notes",
                           "Add notes to this todo below"
                         )}</p>
@@ -298,22 +298,22 @@ module.exports = function(gopherApp) {
         }
       ]
     });
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 
   /**
    * Render a preview when someone views a todo item
-   * in the Gopher UI.
+   * in the MailBots UI.
    *
    * NOTE: This is nearly identical to the above onCommand
    * handler. Find out about making reusable components here:
-   * https://github.com/gopherhq/gopher-app#making-reusable-skills
+   * https://github.com/mailbots/mailbots#making-reusable-skills
    */
-  gopherApp.onTaskViewed("todo", function(gopher) {
-    gopher.webhook.addEmail({
-      to: gopher.get("source.from"),
-      from: "Gopher Todo",
-      subject: gopher.get("task.reference_email.subject"),
+  mailbot.onTaskViewed("todo", function(bot) {
+    bot.webhook.addEmail({
+      to: bot.get("source.from"),
+      from: "MailBots Todo",
+      subject: bot.get("task.reference_email.subject"),
       body: [
         {
           type: "html",
@@ -323,7 +323,7 @@ module.exports = function(gopherApp) {
         {
           type: "html",
           text: `<h1>
-                    Todo: ${gopher.get("task.reference_email.subject")}
+                    Todo: ${bot.get("task.reference_email.subject")}
                 </h1>`
         },
         {
@@ -333,12 +333,12 @@ module.exports = function(gopherApp) {
           style: "primary",
           subject: "Hit Send to Complete this task",
           body:
-            "This is a Gopher email-action, a way to get stuff done without leaving your inbox."
+            "This is a MailBots email-action, a way to get stuff done without leaving your inbox."
         },
         {
           type: "button",
           text: "View Task",
-          url: `https://app.gopher.email/task/${gopher.get("task.id")}`
+          url: `https://app.mailbots.com/task/${bot.get("task.id")}`
         },
         {
           type: "html",
@@ -346,7 +346,7 @@ module.exports = function(gopherApp) {
                 <tr>
                     <td>
                         <h4>NOTES</h4>
-                        <p>${gopher.webhook.getTaskData(
+                        <p>${bot.webhook.getTaskData(
                           "notes",
                           "Add notes to this todo below"
                         )}</p>
@@ -401,6 +401,6 @@ module.exports = function(gopherApp) {
       ]
     });
 
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 };

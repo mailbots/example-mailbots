@@ -1,4 +1,4 @@
-module.exports = function(gopheApp) {  gopherApp.onSettingsViewed("memorize", function(settingsData) {
+module.exports = function(gopheApp) {  mailbot.onSettingsViewed("memorize", function(settingsData) {
     return {
       JSONSchema: {
         title: "Memorization Settings",
@@ -77,15 +77,15 @@ module.exports = function(gopheApp) {  gopherApp.onSettingsViewed("memorize", fu
           }
         }
       },
-      formData: settingsData.extension.private_data.memorize
+      formData: settingsData.mailbot.private_data.memorize
     };
   });
 
-  gopherApp.onSettingsViewed("github", function(settingsData) {
+  mailbot.onSettingsViewed("github", function(settingsData) {
     return {
       JSONSchema: {
         title: "Github Settings",
-        description: "Control how Github Interacts with Gopher.",
+        description: "Control how Github Interacts with MailBots.",
         type: "object",
         properties: {
           firstName: {
@@ -142,20 +142,20 @@ module.exports = function(gopheApp) {  gopherApp.onSettingsViewed("memorize", fu
           }
         }
       },
-      formData: settingsData.extension.private_data.github
+      formData: settingsData.mailbot.private_data.github
     };
   });
 
-  //   gopherApp.onSettingsViewed(function(settingsData) {
+  //   mailbot.onSettingsViewed(function(settingsData) {
   //     console.log(settingsData);
   //   });
 
-  gopherApp.on("extension.settings_viewed", function(gopher) {
+  mailbot.on("mailbot.settings_viewed", function(bot) {
     // The user's existing settings
-    const privateData = gopher.webhook.getExtensionData();
+    const privateData = bot.webhook.getMailBotData();
 
     // This example is taken from: https://mozilla-services.github.io/react-jsonschema-form/
-    gopher.webhook.respond({
+    bot.webhook.respond({
       settings: {
         memorize: {
           JSONSchema: {
@@ -240,7 +240,7 @@ module.exports = function(gopheApp) {  gopherApp.onSettingsViewed("memorize", fu
         github: {
           JSONSchema: {
             title: "Github Settings",
-            description: "Control how Github Interacts with Gopher.",
+            description: "Control how Github Interacts with MailBots.",
             type: "object",
             properties: {
               firstName: {

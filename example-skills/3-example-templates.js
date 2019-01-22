@@ -1,5 +1,5 @@
-module.exports = function(gopherApp) {
-  gopherApp.onCommand("example-crm", function(gopher) {
+module.exports = function(mailbot) {
+  mailbot.onCommand("example-crm", function(bot) {
     const postponeTimes = [
       "1day",
       "2days",
@@ -14,15 +14,15 @@ module.exports = function(gopherApp) {
 
     const email = {
       type: "email",
-      to: gopher.get("source.from"),
-      from: "Gopher",
+      to: bot.get("source.from"),
+      from: "MailBots",
       subject: "Salesforce Followup for Sally Mapleton",
       body: []
     };
 
     email.body.push({
       type: "html",
-      text: `<p>This Gopher email pulls everything needed for the sales rep to follow up
+      text: `<p>This MailBots email pulls everything needed for the sales rep to follow up
         without having to leave their inbox. It would allow the rep to forward emails to their 
         CRM, and receive this reminder any time a reminder is due.</p><hr />`
     });
@@ -152,7 +152,7 @@ module.exports = function(gopherApp) {
       text: "SCHEDULE FOLLOWUP"
     });
 
-    // postponeTimes = _.get(gopher.user, 'postponeTimes', []);
+    // postponeTimes = _.get(bot.user, 'postponeTimes', []);
     for (var i = 0; i < postponeTimes.length; i++) {
       email.body.push({
         type: "button",
@@ -169,17 +169,17 @@ module.exports = function(gopherApp) {
       type: "html",
       text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
     });
-    gopher.webhook.addEmail(email);
-    gopher.webhook.respond();
+    bot.webhook.addEmail(email);
+    bot.webhook.respond();
   });
 
   /**
    * A Github ticket
    */
-  gopherApp.onCommand("example-ticket", function(gopher) {
-    gopher.webhook.addEmail({
-      to: gopher.get("source.from"),
-      subject: "Re: [gopherhq/gopher-express] Example ticket title",
+  mailbot.onCommand("example-ticket", function(bot) {
+    bot.webhook.addEmail({
+      to: bot.get("source.from"),
+      subject: "Re: [mailbots/mailbots] Example ticket title",
       body: [
         {
           type: "html",
@@ -346,18 +346,18 @@ module.exports = function(gopherApp) {
         }
       ]
     });
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 
   /**
    * Integrate your todo list with Todoist
    */
-  gopherApp.onCommand("example-wunderlist", function(gopher) {
+  mailbot.onCommand("example-wunderlist", function(bot) {
     // This would operate similarly to the base todo app, but it would keep data in sync with Todoist.
-    gopher.webhook.addEmail({
-      to: gopher.get("source.from"),
-      from: "Gopher Todoist",
-      subject: gopher.get("task.reference_email.subject"),
+    bot.webhook.addEmail({
+      to: bot.get("source.from"),
+      from: "MailBots Todoist",
+      subject: bot.get("task.reference_email.subject"),
       body: [
         {
           type: "html",
@@ -368,7 +368,7 @@ module.exports = function(gopherApp) {
           type: "html",
           text: `<h1>
                       <img src="https://dr0wv9n0kx6h5.cloudfront.net/664cb69d34d0ef040ff8a446e429bce8feb54b41/site/images/logo-big.png" width="30px" align="absmiddle">
-                      ${gopher.get("task.reference_email.subject")}
+                      ${bot.get("task.reference_email.subject")}
                   </h1>`
         },
         {
@@ -378,7 +378,7 @@ module.exports = function(gopherApp) {
           style: "primary",
           subject: "Hit Send to Complete this task",
           body:
-            "This is a Gopher email-action, a way to get stuff done without leaving your inbox."
+            "This is a MailBots email-action, a way to get stuff done without leaving your inbox."
         },
         {
           type: "button",
@@ -391,7 +391,7 @@ module.exports = function(gopherApp) {
                   <tr>
                       <td>
                           <h4>NOTES</h4>
-                          <p>${gopher.webhook.getTaskData(
+                          <p>${bot.webhook.getTaskData(
                             "notes",
                             "Add notes to this todo below"
                           )}</p>
@@ -413,6 +413,6 @@ module.exports = function(gopherApp) {
         }
       ]
     });
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 };

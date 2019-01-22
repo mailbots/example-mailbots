@@ -1,6 +1,6 @@
-module.exports = function(gopherApp) {
+module.exports = function(mailbot) {
   /**
-   * How to create a Gopher task when a Github issue is opened.
+   * How to create a MailBots task when a Github issue is opened.
    *
    * Copy / paste the github example webhook payload...
    * https://developer.github.com/v3/activity/events/types/#issuesevent
@@ -8,22 +8,22 @@ module.exports = function(gopherApp) {
    * Name the event "github.issue.opened"
    *
    * NOTE: For this to actually work, you would need to first set up Github to post to your
-   * extension's event_url. This is mainly to demonstrate how the
+   * mailbot's event_url. This is mainly to demonstrate how the
    * event system works. Also, the Sandbox does not yet show email previews
    * of tasks created by the API (as shown below).
    */
-  gopherApp.onEvent("github.issue.opened", async function(gopher) {
+  mailbot.onEvent("github.issue.opened", async function(bot) {
     // pull some useful information out of the github webhook body
-    var title = gopher.get("payload.body_json.issue.title");
-    var body = gopher.get("payload.body_json.issue.body");
-    var issueUrl = gopher.get("payload.body_json.issue.url");
-    var creator = gopher.get("payload.body_json.sender.login");
-    var avatarUrl = gopher.get("payload.body_json.sender.avatar_url");
+    var title = bot.get("payload.body_json.issue.title");
+    var body = bot.get("payload.body_json.issue.body");
+    var issueUrl = bot.get("payload.body_json.issue.url");
+    var creator = bot.get("payload.body_json.sender.login");
+    var avatarUrl = bot.get("payload.body_json.sender.avatar_url");
 
     // Send
     var githubTodoEmail = {
-      to: gopher.get("user.primary_email"),
-      from: "Gopher Todo",
+      to: bot.get("user.primary_email"),
+      from: "MailBots Todo",
       subject: `Todo Created From Github: ${title}`,
       body: [
         {
@@ -56,12 +56,12 @@ module.exports = function(gopherApp) {
           style: "primary",
           subject: "Close issue in Github",
           body: `Once we integrate the Github API, this email-action can 
-          complete the task in both Github and the Gopher Todo list`
+          complete the task in both Github and the MailBots Todo list`
         },
         {
           type: "button",
-          text: "View Task On Gopher",
-          url: `https://app.gopher.email/task/${gopher.get("task.id")}`
+          text: "View Task On MailBots",
+          url: `https://app.mailbots.com/task/${bot.get("task.id")}`
         },
         {
           type: "button",
@@ -106,42 +106,42 @@ module.exports = function(gopherApp) {
       ]
     };
 
-    // GopherApp includes an authenticated instance of https://github.com/gopherhq/gopherhq-js
-    // on the gopher.api object so it can be easily used with any request.
+    // MailBots includes an authenticated instance of https://github.com/mailbots/mailbots-sdk-js
+    // on the bot.api object so it can be easily used with any request.
     // In the Sandbox, adjust your filter to view API calls to see this API call
-    await gopher.api.createTask({
+    await bot.api.createTask({
       task: {
-        command: "github.todo@gopher-skills-kit.gopher.email",
+        command: "github.todo@mailbots-examples.eml.bot",
         trigger_timeformat: "3days",
         send_messages: [githubTodoEmail]
       }
     });
 
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 
   // Handle when a Github-type task triggers (ie, the reminder becomes due)
-  gopherApp.onTrigger("github.todo", function(gopher) {
+  mailbot.onTrigger("github.todo", function(bot) {
     // Pull the latest ticket info via github API. Send it in an email to the user.
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 
   // Handle the email action to close the Github issue
-  gopherApp.onAction("github.close", function(gopher) {
+  mailbot.onAction("github.close", function(bot) {
     // use Github API to close the issue
-    gopher.webhook.quickReply("Issue closed via Github API");
-    gopher.webhook.respond();
+    bot.webhook.quickReply("Issue closed via Github API");
+    bot.webhook.respond();
   });
 
   // Handle when a user views the future task
-  gopherApp.onTaskViewed("github.todo", function(gopher) {
+  mailbot.onTaskViewed("github.todo", function(bot) {
     // query Github API for latest ticket info...
     // render email
-    gopher.set(
+    bot.set(
       "webhook.message",
       "This would show the github email with latest ticket information"
     );
-    gopher.set("webhook.status", "warning"); // Forces warning message to render in Gopher Web App
-    gopher.webhook.respond();
+    bot.set("webhook.status", "warning"); // Forces warning message to render in MailBots Web App
+    bot.webhook.respond();
   });
 };

@@ -1,3 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =1
-let g:netrw_dirhist_1='/rbd/pnpm-volume/89fc2d3f-5cb9-4ec1-a41a-9394c5bc731b/node_modules/.registry.npmjs.org/gopher-app/0.0.3-beta/node_modules/gopher-app'

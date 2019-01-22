@@ -1,9 +1,9 @@
-module.exports = function(gopherApp) {
+module.exports = function(mailbot) {
   /**
    * Render a settings form
-   * See: https://github.com/gopherhq/gopher-app#onsettingsviewed
+   * See: https://github.com/mailbots/mailbots#onsettingsviewed
    */
-  gopherApp.onSettingsViewed("todo", function(gopher, settings) {
+  mailbot.onSettingsViewed("todo", function(bot, settings) {
     return {
       JSONSchema: {
         title: "Todo Settings",
@@ -64,16 +64,16 @@ module.exports = function(gopherApp) {
    * Handle when a settings form is saved. For example,
    * validate data or update data in another system.
    */
-  gopherApp.on("extension.settings_pre_save", function(gopher) {
-    var settings = gopher.get("settings");
+  mailbot.on("mailbot.settings_pre_save", function(bot) {
+    var settings = bot.get("settings");
 
     var settingsAreValid = true;
     if (settingsAreValid) {
-      gopher.webhook.respond();
+      bot.webhook.respond();
     } else {
       // An error response prevents settings from being saved and shows
       // error message to user.
-      return gopher.webhook.respond({
+      return bot.webhook.respond({
         webhook: {
           status: "error",
           message: "There was an error"

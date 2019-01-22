@@ -1,50 +1,50 @@
-module.exports = function(gopherApp) {
+module.exports = function(mailbot) {
   /**
-   * Gopher Skills can be published as NPM modules. For example,
+   * MailBots Skills can be published as NPM modules. For example,
    * this skill automatically set reminders for a task using
    * spaced repetition - a memorization technique that sets
    * reminders at increatingly longer intervals each time.
    * Skills can connect to APIs, set reminders, export custom
    * UI elements and handle their own settings.
    */
-  var memorize = require("gopher-memorize")(gopherApp);
+  var memorize = require("@mailbots/skill-memorize")(mailbot);
 
-  gopherApp.onCommand("remember", function(gopher) {
-    memorize.memorizeTask(gopher);
-    gopher.webhook.addEmail({
-      to: gopher.get("source.from"),
-      from: "Gopher Remember",
-      subject: gopher.get("task.reference_email.subject"),
+  mailbot.onCommand("remember", function(bot) {
+    memorize.memorizeTask(bot);
+    bot.webhook.addEmail({
+      to: bot.get("source.from"),
+      from: "MailBots Remember",
+      subject: bot.get("task.reference_email.subject"),
       body: [
         {
           type: "html",
-          text: `<p>This email shows the use of an Gopher Skill 
-          that was installed from npm called "gopher-memorize". This 
+          text: `<p>This email shows the use of an MailBots Skill 
+          that was installed from npm called "@mailbots/skill-memorize". This 
           skill sets the trigger schedule of any task at increasing 
           intervals, optimized for memorization.</p>
           <p>Trigger the task task via the sandbox to see this
           triggering in action. View source to see how it's done.</p>
           <hr />`
         },
-        ...memorize.renderMemorizationControls(gopher),
+        ...memorize.renderMemorizationControls(bot),
         {
           type: "section"
         },
         {
           type: "title",
-          text: gopher.get("task.reference_email.subject")
+          text: bot.get("task.reference_email.subject")
         }
       ]
     });
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 
-  gopherApp.on("task.triggered", function(gopher) {
-    memorize.memorizeTask(gopher);
-    gopher.webhook.addEmail({
-      to: gopher.get("source.from"),
-      from: "Gopher Memorize",
-      subject: gopher.get("task.reference_email.subject"),
+  mailbot.on("task.triggered", function(bot) {
+    memorize.memorizeTask(bot);
+    bot.webhook.addEmail({
+      to: bot.get("source.from"),
+      from: "MailBots Memorize",
+      subject: bot.get("task.reference_email.subject"),
       body: [
         {
           type: "html",
@@ -54,11 +54,11 @@ module.exports = function(gopherApp) {
         },
         {
           type: "title",
-          text: gopher.get("task.reference_email.subject")
+          text: bot.get("task.reference_email.subject")
         },
-        ...memorize.renderMemorizationControls(gopher)
+        ...memorize.renderMemorizationControls(bot)
       ]
     });
-    gopher.webhook.respond();
+    bot.webhook.respond();
   });
 };

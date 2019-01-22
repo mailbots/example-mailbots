@@ -1,29 +1,28 @@
 {
-  "name": "gopher-skills-kit",
+  "name": "example-mailbots",
   "version": "0.0.3-alpha",
   "description": "A simple Node app built on Express, instantly up and running.",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "ngrok": "ngrok http 3011 --subdomain=gopher-skills-kit-local"
+    "ngrok": "ngrok http 3011 --subdomain=example-mailbots"
   },
   "dependencies": {
+    "@mailbots/mailbots-sdk": "^0.1.4-beta",
     "dotenv": "6.0.0",
-    "express": "^4.16.3",
-    "gopher-app": "^0.0.15-beta",
-    "gopher-memorize": "0.0.4-alpha"
+    "mailbots": "^0.1.8-beta"
   },
   "engines": {
     "node": "8.x"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/hello-express"
+    "url": "https://github.com/mailbots/example-mailbots.git"
   },
   "license": "MIT",
   "keywords": [
-    "node",
-    "glitch",
-    "express"
+    "bots",
+    "email",
+    "mailbots"
   ]
 }

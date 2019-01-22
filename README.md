@@ -1,17 +1,15 @@
-## Gopher Skills Starter Kit
+Mailbots is a platform to create bots, AIs and assistants that get things done right from your inbox. Read more at [https://www.mailbots.com](mailbots.com).
+
+## MailBots Examples
 
 Learn by example...and copying and pasting ✂ 👍
 
-This project has a series of well-commented examples that demonstrating Gopher Skills. They examples are numerically ordered, each one building on concepts introduced in the previous example.
+This project has a series of well-commented examples that demonstrating different MailBots. They examples are numerically ordered, each one building on concepts introduced in the previous example.
 
 ## Docs
 
-[Gopher App](https://www.npmjs.com/package/gopher-app) – The core framework to build gopher apps
+[MailBots](https://www.npmjs.com/package/mailbots) – The core framework to build MailBots
 
-[Gopher Docs](https://docs.gopher.email/) - Detailed platform documentation
+[MailBots Docs](https://docs.mailbots.com/) - Detailed platform documentation
 
-[Gopher REST API](https://postman.gopheremail.com) - REST API Docs
-
-## What is Gopher?
-
-Gopher.email helps you get things done without leaving your email. It's like an exceptionally skilled little rodent that digs tunnels from your inbox to all your other systems – automating data entry, streamlining your workflows setting reminder and making your inbox an all-around more productive place.
+[MailBots REST API](https://mailbots.postman.co) - REST API Docs (Postman)
