@@ -7,9 +7,11 @@ module.exports = function(mailbot) {
    * Skills can connect to APIs, set reminders, export custom
    * UI elements and handle their own settings.
    */
-  var memorize = require("@mailbots/skill-memorize")(mailbot);
+  // var memorize = require("@mailbots/skill-memorize")(mailbot);
 
   mailbot.onCommand("remember", function(bot) {
+    // @TODO: Roll back memorize skill to simpler version. Release here.
+    return;
     memorize.memorizeTask(bot);
     bot.webhook.addEmail({
       to: bot.get("source.from"),

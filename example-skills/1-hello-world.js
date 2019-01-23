@@ -14,7 +14,7 @@ module.exports = function(mailbot) {
      */
     bot.webhook.addEmail({
       to: bot.get("source.from"), // Send to the "from" address
-      subject: "Hello World!",
+      subject: `Hello ${bot.get("source.from")}!`,
       body: [
         {
           type: "html",

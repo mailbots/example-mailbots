@@ -1,3 +1,5 @@
+const MailBotsClient = require("@mailbots/mailbots-sdk");
+
 module.exports = function(mailbot) {
   /**
    * Someone can either forward an email, cc or bcc
@@ -34,7 +36,7 @@ module.exports = function(mailbot) {
         {
           type: "button",
           text: "View Task",
-          url: `https://app.mailbots.com/task/${bot.get("task.id")}`
+          url: `${bot.mailbotsAdmin}tasks/${bot.get("task.id")}`
         },
         {
           type: "html",
@@ -121,18 +123,25 @@ module.exports = function(mailbot) {
   });
 
   /**
-   * The user emails view@my-todo-app.mailbots.com
-   * to view their outstanding reminders
+   * This email command retrieves a list of their pending todos. They could also view them
+   * on the MailBots.com task UI, or you could send them their todos each morning.
+   *
+   * Note the use of MailBotsClient and how easy it is to authorize.
+   * See https://mailbots-sdk-js.mailbots.com/ and http://mailbots.postman.co for more on the API.
    */
   mailbot.onCommand("my-todos", async function(bot) {
     try {
-      const allTasks = await bot.api.getTasks();
+      mbClient = MailBotsClient.fromBot(bot);
+      const allTasks = await mbClient.getTasks({ limit: 100 });
+      allTasks.tasks = allTasks.tasks || [];
+      const todoTasks = allTasks.tasks.filter(task =>
+        task.command.includes("todo")
+      );
       let pendingTasksHtml = "";
-      allTasks.tasks.forEach(task => {
-        pendingTasksHtml += `
-          <h3>${task.reference_email.subject}</h3>
-          <p>${task.reference_email.to}</p>
-          `;
+      todoTasks.forEach(task => {
+        const subject = task.reference_email.subject || "Blank Subject";
+        //prettier-ignore
+        pendingTasksHtml += `<p><a href="${bot.config.mailbotsAdmin}tasks/${task.id}" target="_blank">${subject}</a></p>`;
       });
       const email = bot.webhook.addEmail({
         to: bot.get("source.from"),
@@ -150,6 +159,7 @@ module.exports = function(mailbot) {
         ]
       });
     } catch (e) {
+      console.log(e);
       debugger;
     }
     bot.webhook.respond();
@@ -338,7 +348,7 @@ module.exports = function(mailbot) {
         {
           type: "button",
           text: "View Task",
-          url: `https://app.mailbots.com/task/${bot.get("task.id")}`
+          url: `${bot.config.mailbotsAdmin}/tasks/${bot.get("task.id")}`
         },
         {
           type: "html",

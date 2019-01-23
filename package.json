@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
+    "dev:inspect": "nodemon --inspect-brk app.js",
     "ngrok": "ngrok http 3011 --subdomain=example-mailbots"
   },
   "dependencies": {
@@ -24,5 +25,8 @@
     "bots",
     "email",
     "mailbots"
-  ]
+  ],
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
 }

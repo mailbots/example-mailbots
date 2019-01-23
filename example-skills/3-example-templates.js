@@ -1,183 +1,11 @@
 module.exports = function(mailbot) {
-  mailbot.onCommand("example-crm", function(bot) {
-    const postponeTimes = [
-      "1day",
-      "2days",
-      "3days",
-      "5days",
-      "1weeks",
-      "2weeks",
-      "6weeks",
-      "3months",
-      "6months"
-    ];
-
-    const email = {
-      type: "email",
-      to: bot.get("source.from"),
-      from: "MailBots",
-      subject: "Salesforce Followup for Sally Mapleton",
-      body: []
-    };
-
-    email.body.push({
-      type: "html",
-      text: `<p>This MailBots email pulls everything needed for the sales rep to follow up
-        without having to leave their inbox. It would allow the rep to forward emails to their 
-        CRM, and receive this reminder any time a reminder is due.</p><hr />`
-    });
-
-    email.body.push({
-      type: "html",
-      text: `<br /><img src="http://fut-cdn.s3.amazonaws.com/gopher-demo-2017/sf.png" border="0" width="50px" style="float: right; padding: 10px;">
-            <p>Followup reminder<br />
-            <span style="font-size: 20px; line-height: 25px">Sally Mapleton</span><br />
-            VP Engineering at Jones Corp</p>`
-    });
-
-    // Conditionally add data to email body
-    const showContactData = true;
-    if (showContactData) {
-      email.body.push({
-        type: "section",
-        text: "CONTACT INFORMATION"
-      });
-
-      email.body.push({
-        type: "button",
-        text: "email:smapleton@initech.com",
-        url: "mailto:smapleton@initech.com"
-      });
-
-      email.body.push({
-        type: "button",
-        text: "cell: 408-867-5309",
-        url: "tel:408-867-5309"
-      });
-
-      email.body.push({
-        type: "button",
-        text: "desk: 650-555-8857",
-        url: "tel:650-555-8857"
-      });
-
-      email.body.push({
-        type: "button",
-        text: "main: 650-555-1211",
-        url: "tel:650-555-1211"
-      });
-    }
-
-    email.body.push({
-      type: "section"
-    });
-
-    email.body.push({
-      type: "section",
-      text: "SALESFORCE SHORTCUTS"
-    });
-
-    email.body.push({
-      type: "button",
-      text: "View Contact on Salesforce.com",
-      url: "salesforce.com"
-    });
-
-    email.body.push({
-      type: "button",
-      text: "Complete this activity",
-      action: "complete",
-      subject: "Hit send to complete this activity"
-    });
-
-    email.body.push({
-      type: "button",
-      text: "Log a Call",
-      action: "log_a_call",
-      subject: "Add notes below, then hit 'send'",
-      body: ""
-    });
-
-    email.body.push({
-      type: "button",
-      text: "Add notes",
-      action: "add_notes",
-      subject: "Add notes below, then hit 'send'",
-      body: ""
-    });
-
-    email.body.push({
-      type: "html",
-      text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
-    });
-
-    email.body.push({
-      type: "section",
-      text: "LATEST SALESFORCE ACTIVITY",
-      description: ""
-    });
-
-    email.body.push({
-      type: "html",
-      text: `<p><em>Mon, Jan 23, 2018</em><br />
-            <em>John Smith</em><br />
-                    Sent followup email. </strong> Discount offered to move ahead before the end of the quarter.</p>`
-    });
-
-    email.body.push({
-      type: "html",
-      text: `<p><em>Thurs, Jan 19, 2018</em><br /><em>John Smith</em><br >
-                    Proposal sent. </strong> Quoted 3000 units. Special approval on pricing received from Tom in finance. Coordinate with Tom on future deals with this customer.</p>`
-    });
-
-    email.body.push({
-      type: "html",
-      text: `<p><em>Thurs, Jan 19, 2018</em><br /><em>Sally Jones</em><br >
-                    Special pricing approved.`
-    });
-
-    email.body.push({
-      type: "html",
-      text: `<p><em>Monday, Jan 16, 2018</em><br /><em>John Smith</em><br >
-                    Customer intersted in moving ahead. Needs 3000 units for use in upcoming event.</p>`
-    });
-
-    email.body.push({
-      type: "html",
-      text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
-    });
-
-    email.body.push({
-      type: "section",
-      text: "SCHEDULE FOLLOWUP"
-    });
-
-    // postponeTimes = _.get(bot.user, 'postponeTimes', []);
-    for (var i = 0; i < postponeTimes.length; i++) {
-      email.body.push({
-        type: "button",
-        text: postponeTimes[i],
-        action: `postpone.${postponeTimes[i]}`,
-        subject: `Schedule a followup for ${
-          postponeTimes[i]
-        } (Add notes below)`,
-        body: ""
-      });
-    }
-
-    email.body.push({
-      type: "html",
-      text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
-    });
-    bot.webhook.addEmail(email);
-    bot.webhook.respond();
-  });
-
   /**
    * A Github ticket
+   * Note how putting in its own function allows you to reuse email rendering logic
+   * in multiple handlers. The "bot" is the same regardless of handler.
    */
-  mailbot.onCommand("example-ticket", function(bot) {
-    bot.webhook.addEmail({
+  function getTicketEmail(bot) {
+    return {
       to: bot.get("source.from"),
       subject: "Re: [mailbots/mailbots] Example ticket title",
       body: [
@@ -238,14 +66,16 @@ module.exports = function(mailbot) {
           text: "andylibrian",
           action: "assign.andylibrian",
           subject: "Hit send to assign this issue to andylibrian ",
-          body: ``
+          body: ``,
+          style: "block"
         },
         {
           type: "button",
           text: "myself",
           action: "assign.self",
           subject: "Hit send to assign this issue to yourself",
-          body: ``
+          body: ``,
+          style: "block"
         },
         {
           type: "html",
@@ -260,14 +90,16 @@ module.exports = function(mailbot) {
           text: "Comment",
           action: "comment",
           subject: "Hit send to add your comment",
-          body: ``
+          body: ``,
+          style: "block"
         },
         {
           type: "button",
           text: "Close Ticket",
           action: "close",
           subject: "Hit send to close this ticket",
-          body: ``
+          body: ``,
+          style: "block"
         },
         {
           type: "html",
@@ -345,7 +177,233 @@ module.exports = function(mailbot) {
           text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
         }
       ]
+    };
+  }
+
+  mailbot.onCommand("example-ticket", function(bot) {
+    bot.webhook.addEmail(getTicketEmail(bot));
+    bot.webhook.respond();
+  });
+
+  // Reusing the same email rendering logic
+  mailbot.onTaskViewed("example-ticket", function(bot) {
+    bot.webhook.addEmail(getTicketEmail(bot));
+    bot.webhook.respond();
+  });
+
+  // Handle when a Github-type task triggers (ie, the reminder becomes due)
+  mailbot.onTrigger("github.todo", function(bot) {
+    bot.quickReply("See source code for how to handle a reminder");
+    // Pull the latest ticket info via github API. Send it in an email to the user using the same template as above.
+    bot.webhook.respond();
+  });
+
+  // Handle the email action to close the Github issue
+  mailbot.onAction("github.close", function(bot) {
+    // use Github API to close the issue
+    bot.webhook.quickReply(
+      "See source code for how issue wuold be closed via Github API"
+    );
+    bot.webhook.respond();
+  });
+
+  // Handle when a user views the future task
+  mailbot.onTaskViewed("github.todo", function(bot) {
+    // query Github API for latest ticket info...
+    // render email
+    bot.set(
+      "webhook.message",
+      "This would show the github email with latest ticket information"
+    );
+    bot.set("webhook.status", "warning"); // Forces warning message to render in MailBots Web App
+    bot.webhook.respond();
+  });
+
+  /**
+   * Render a CRM template
+   * It's handy to build the response body dynamically rather than
+   * declaring everything in a JSON literal. This way you can add / remove and
+   * reorder things on the fly.
+   */
+  mailbot.onCommand("example-crm", function(bot) {
+    const postponeTimes = [
+      "1day",
+      "2days",
+      "3days",
+      "5days",
+      "1weeks",
+      "2weeks",
+      "6weeks",
+      "3months",
+      "6months"
+    ];
+
+    const email = {
+      type: "email",
+      to: bot.get("source.from"),
+      from: "MailBots",
+      subject: "Salesforce Followup for Sally Mapleton",
+      body: []
+    };
+
+    email.body.push({
+      type: "html",
+      text: `<p>This MailBots email pulls everything needed for the sales rep to follow up
+        without having to leave their inbox. It would allow the rep to forward emails to their 
+        CRM, and receive this reminder any time a reminder is due.</p><hr />`
     });
+
+    email.body.push({
+      type: "html",
+      text: `<br /><img src="http://fut-cdn.s3.amazonaws.com/gopher-demo-2017/sf.png" border="0" width="50px" style="float: right; padding: 10px;">
+            <p>Followup reminder<br />
+            <span style="font-size: 20px; line-height: 25px">Sally Mapleton</span><br />
+            VP Engineering at Jones Corp</p>`
+    });
+
+    // Conditionally add data to email body
+    const showContactData = true;
+    if (showContactData) {
+      email.body.push({
+        type: "section",
+        text: "CONTACT INFORMATION"
+      });
+
+      email.body.push({
+        type: "button",
+        text: "email:smapleton@initech.com",
+        url: "mailto:smapleton@initech.com",
+        style: "block"
+      });
+
+      email.body.push({
+        type: "button",
+        text: "cell: 408-867-5309",
+        url: "tel:408-867-5309",
+        style: "block"
+      });
+
+      email.body.push({
+        type: "button",
+        text: "desk: 650-555-8857",
+        url: "tel:650-555-8857",
+        style: "block"
+      });
+
+      email.body.push({
+        type: "button",
+        text: "main: 650-555-1211",
+        url: "tel:650-555-1211",
+        style: "block"
+      });
+    }
+
+    email.body.push({
+      type: "section"
+    });
+
+    email.body.push({
+      type: "section",
+      text: "SALESFORCE SHORTCUTS"
+    });
+
+    email.body.push({
+      type: "button",
+      text: "View Contact on Salesforce.com",
+      url: "salesforce.com",
+      style: "block"
+    });
+
+    email.body.push({
+      type: "button",
+      text: "Complete this activity",
+      action: "complete",
+      subject: "Hit send to complete this activity",
+      style: "block"
+    });
+
+    email.body.push({
+      type: "button",
+      text: "Log a Call",
+      action: "log_a_call",
+      subject: "Add notes below, then hit 'send'",
+      body: "",
+      style: "block"
+    });
+
+    email.body.push({
+      type: "button",
+      text: "Add notes",
+      action: "add_notes",
+      subject: "Add notes below, then hit 'send'",
+      body: "",
+      style: "block"
+    });
+
+    email.body.push({
+      type: "html",
+      text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
+    });
+
+    email.body.push({
+      type: "section",
+      text: "LATEST SALESFORCE ACTIVITY",
+      description: ""
+    });
+
+    email.body.push({
+      type: "html",
+      text: `<p><em>Mon, Jan 23, 2018</em><br />
+            <em>John Smith</em><br />
+                    Sent followup email. </strong> Discount offered to move ahead before the end of the quarter.</p>`
+    });
+
+    email.body.push({
+      type: "html",
+      text: `<p><em>Thurs, Jan 19, 2018</em><br /><em>John Smith</em><br >
+                    Proposal sent. </strong> Quoted 3000 units. Special approval on pricing received from Tom in finance. Coordinate with Tom on future deals with this customer.</p>`
+    });
+
+    email.body.push({
+      type: "html",
+      text: `<p><em>Thurs, Jan 19, 2018</em><br /><em>Sally Jones</em><br >
+                    Special pricing approved.`
+    });
+
+    email.body.push({
+      type: "html",
+      text: `<p><em>Monday, Jan 16, 2018</em><br /><em>John Smith</em><br >
+                    Customer intersted in moving ahead. Needs 3000 units for use in upcoming event.</p>`
+    });
+
+    email.body.push({
+      type: "html",
+      text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
+    });
+
+    email.body.push({
+      type: "section",
+      text: "SCHEDULE FOLLOWUP"
+    });
+
+    // postponeTimes = _.get(bot.user, 'postponeTimes', []);
+    for (var i = 0; i < postponeTimes.length; i++) {
+      email.body.push({
+        type: "button",
+        text: postponeTimes[i],
+        action: `postpone.${postponeTimes[i]}`,
+        subject: `Schedule a followup for ${
+          postponeTimes[i]
+        } (Add notes below)`,
+        body: ""
+      });
+    }
+
+    email.body.push({
+      type: "html",
+      text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
+    });
+    bot.webhook.addEmail(email);
     bot.webhook.respond();
   });
 
@@ -354,10 +412,11 @@ module.exports = function(mailbot) {
    */
   mailbot.onCommand("example-wunderlist", function(bot) {
     // This would operate similarly to the base todo app, but it would keep data in sync with Todoist.
+    const todoSubject = bot.get("task.reference_email.subject") || "Buy Milk";
     bot.webhook.addEmail({
       to: bot.get("source.from"),
       from: "MailBots Todoist",
-      subject: bot.get("task.reference_email.subject"),
+      subject: todoSubject,
       body: [
         {
           type: "html",
@@ -368,7 +427,7 @@ module.exports = function(mailbot) {
           type: "html",
           text: `<h1>
                       <img src="https://dr0wv9n0kx6h5.cloudfront.net/664cb69d34d0ef040ff8a446e429bce8feb54b41/site/images/logo-big.png" width="30px" align="absmiddle">
-                      ${bot.get("task.reference_email.subject")}
+                      ${todoSubject}
                   </h1>`
         },
         {

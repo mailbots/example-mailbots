@@ -1,3 +1,5 @@
+const MailBotsClient = require("@mailbots/mailbots-sdk");
+
 module.exports = function(mailbot) {
   /**
    * How to create a MailBots task when a Github issue is opened.
@@ -22,6 +24,7 @@ module.exports = function(mailbot) {
 
     // Send
     var githubTodoEmail = {
+      type: "email",
       to: bot.get("user.primary_email"),
       from: "MailBots Todo",
       subject: `Todo Created From Github: ${title}`,
@@ -106,42 +109,17 @@ module.exports = function(mailbot) {
       ]
     };
 
-    // MailBots includes an authenticated instance of https://github.com/mailbots/mailbots-sdk-js
-    // on the bot.api object so it can be easily used with any request.
     // In the Sandbox, adjust your filter to view API calls to see this API call
-    await bot.api.createTask({
+    const mbClient = MailBotsClient.fromBot(bot);
+    await mbClient.createTask({
+      verbose: 1,
       task: {
-        command: "github.todo@mailbots-examples.eml.bot",
-        trigger_timeformat: "3days",
-        send_messages: [githubTodoEmail]
-      }
+        command: `github.todo@${bot.config.mailDomain}`,
+        trigger_timeformat: "3days"
+      },
+      send_messages: [githubTodoEmail]
     });
 
-    bot.webhook.respond();
-  });
-
-  // Handle when a Github-type task triggers (ie, the reminder becomes due)
-  mailbot.onTrigger("github.todo", function(bot) {
-    // Pull the latest ticket info via github API. Send it in an email to the user.
-    bot.webhook.respond();
-  });
-
-  // Handle the email action to close the Github issue
-  mailbot.onAction("github.close", function(bot) {
-    // use Github API to close the issue
-    bot.webhook.quickReply("Issue closed via Github API");
-    bot.webhook.respond();
-  });
-
-  // Handle when a user views the future task
-  mailbot.onTaskViewed("github.todo", function(bot) {
-    // query Github API for latest ticket info...
-    // render email
-    bot.set(
-      "webhook.message",
-      "This would show the github email with latest ticket information"
-    );
-    bot.set("webhook.status", "warning"); // Forces warning message to render in MailBots Web App
     bot.webhook.respond();
   });
 };
