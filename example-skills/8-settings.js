@@ -13,7 +13,7 @@ module.exports = function(mailbot) {
     todoSettings.submitButton();
 
     // Populate form values
-    todoSettings.populate(bot.get("mailbot.saved_data.todo"));
+    todoSettings.populate(bot.webhook.getMailBotData("todo"));
     // Note bot.webhook.respond() is NOT called
   });
 
