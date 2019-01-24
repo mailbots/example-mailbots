@@ -1,12 +1,24 @@
 {
-  "name": "news",
+  "name": "example-news-mailbot",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon app.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "keywords": [
+    "bot",
+    "mailbot",
+    "email"
+  ],
+  "author": "Reilly Sweetland",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "@mailbots/mailbots-sdk": "^0.1.4-beta",
+    "dotenv": "^6.2.0",
+    "mailbot": "^3.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
 }
