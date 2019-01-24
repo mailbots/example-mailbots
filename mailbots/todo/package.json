@@ -1,0 +1,22 @@
+{
+  "name": "example-todo-mailbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "keywords": [
+    "bot",
+    "email",
+    "mailbot"
+  ],
+  "author": "Reilly Sweetland",
+  "license": "ISC",
+  "dependencies": {
+    "@mailbots/mailbots-sdk": "^0.1.4-beta",
+    "dotenv": "^6.2.0",
+    "mailbots": "^0.1.12-beta",
+    "nodemon": "^1.18.9"
+  }
+}

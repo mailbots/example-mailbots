@@ -9,7 +9,7 @@ mailbot.onCommand("hello", function(bot) {
 });
 
 // Load skills
-mailbot.loadSkill(__dirname + "/example-skills/");
+mailbot.loadSkill(__dirname + "/concepts/");
 
 // Start listening for requests
 mailbot.listen();

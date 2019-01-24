@@ -1,0 +1,16 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "Reilly Sweetland",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "mailbots": "^0.1.12-beta"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "example-mailbots",
-  "version": "0.0.3-alpha",
+  "version": "0.1.0-alpha",
   "description": "A simple Node app built on Express, instantly up and running.",
   "main": "app.js",
   "scripts": {
@@ -12,7 +12,7 @@
   "dependencies": {
     "@mailbots/mailbots-sdk": "^0.1.4-beta",
     "dotenv": "6.0.0",
-    "mailbots": "^0.1.10-beta"
+    "mailbots": "^0.1.12-beta"
   },
   "engines": {
     "node": "8.x"
