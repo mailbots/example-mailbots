@@ -1,0 +1,23 @@
+{
+  "name": "@mailbots/example-mailbots",
+  "version": "0.1.0-beta",
+  "description": "Example MailBots",
+  "scripts": {
+    "start": "echo \"Run each MailBot independently\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mailbots/example-mailbots.git"
+  },
+  "keywords": [
+    "bot",
+    "email",
+    "mailbots"
+  ],
+  "author": "Reilly Sweetland<esweetland@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mailbots/example-mailbots/issues"
+  },
+  "homepage": "https://github.com/mailbots/example-mailbots#readme"
+}

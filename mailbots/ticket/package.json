@@ -1,5 +1,5 @@
 {
-  "name": "example-news-mailbot",
+  "name": "example-ticket-mailbot",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "dependencies": {
     "@mailbots/mailbots-sdk": "^0.1.4-beta",
     "dotenv": "^6.2.0",
-    "mailbots": "^0.1.12-beta"
+    "mailbot": "^3.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.9"
