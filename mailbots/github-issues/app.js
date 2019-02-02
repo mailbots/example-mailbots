@@ -30,11 +30,11 @@ mailbot.onEvent("github", async function(bot) {
 
     task: {
       stored_data: {
-        issueInfo: bot.get("payload.body_json"),
+        issueInfo: bot.get("payload.body_json")
       },
-      command: `github@${bot.config.mailDomain}`,
+      command: `github@${bot.config.mailDomain}`
     },
-    send_messages: [getGithubEmail(bot)], // send an email when creating the task
+    send_messages: [getGithubEmail(bot)] // send an email when creating the task
   };
 
   try {
@@ -63,7 +63,7 @@ mailbot.onSettingsViewed(function(bot) {
   const mySettingsPage = bot.webhook.settingsPage({
     namespace: "github",
     title: "GitHub Integration Settings",
-    menuTitle: "GitHub",
+    menuTitle: "GitHub"
   });
 
   mySettingsPage.text(`
@@ -80,7 +80,7 @@ to point to their unique MailBot event URL which, in your case, is \`${bot.get(
 
   mySettingsPage.input({
     name: "github_token",
-    title: "Github token",
+    title: "Github token"
   });
 
   mySettingsPage.submitButton();

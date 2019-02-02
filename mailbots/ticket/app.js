@@ -24,9 +24,9 @@ mailbot.onEvent("github.issue.opened", async function(bot) {
   const createTaskParams = {
     verbose: 1,
     task: {
-      command: `github@${bot.config.mailDomain}`,
+      command: `github@${bot.config.mailDomain}`
     },
-    send_messages: [getGithubEmail(bot)], // send an email when creating the task
+    send_messages: [getGithubEmail(bot)] // send an email when creating the task
   };
 
   try {
@@ -114,7 +114,7 @@ mailbot.onSettingsViewed(function(bot) {
   const mySettingsPage = bot.webhook.settingsPage({
     namespace: "github",
     title: "GitHub Integration Settings",
-    menuTitle: "GitHub",
+    menuTitle: "GitHub"
   });
 
   mySettingsPage.text(`
