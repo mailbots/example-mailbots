@@ -1,12 +1,12 @@
-const TurndownService = require('turndown');
-const axios = require('axios');
+const TurndownService = require("turndown");
+const axios = require("axios");
 
 module.exports = async bot => {
-  const githubToken = bot.get('mailbot.stored_data.github.github_token');
-  const issueInfo = bot.get('task.stored_data.issueInfo');
+  const githubToken = bot.get("mailbot.stored_data.github.github_token");
+  const issueInfo = bot.get("task.stored_data.issueInfo");
 
   //the email html is the comment content
-  let comment = bot.get('source.html');
+  let comment = bot.get("source.html");
 
   const turndownService = new TurndownService();
 
@@ -23,9 +23,9 @@ module.exports = async bot => {
     { body: comment }
   );
 
-  bot.set('webhook.status', 'info');
+  bot.set("webhook.status", "info");
   bot.set(
-    'webhook.message',
+    "webhook.message",
     `Comment for issue #${issueNo} from ${repoFullName} was sent.`
   );
   bot.webhook.respond();

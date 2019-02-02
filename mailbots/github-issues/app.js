@@ -1,24 +1,24 @@
-require('dotenv').config();
-const MailBots = require('mailbots');
+require("dotenv").config();
+const MailBots = require("mailbots");
 const mailbot = new MailBots();
-const MailBotsApi = require('@mailbots/mailbots-sdk');
-const { getGithubEmail } = require('./emails');
+const MailBotsApi = require("@mailbots/mailbots-sdk");
+const { getGithubEmail } = require("./emails");
 
-const onComment = require('./onComment');
-const onAssignSelf = require('./onAssignSelf');
-const onClose = require('./onClose');
-const onLabel = require('./onLabel');
+const onComment = require("./onComment");
+const onAssignSelf = require("./onAssignSelf");
+const onClose = require("./onClose");
+const onLabel = require("./onLabel");
 
 /**
  * Create a MailBots task when a Github issue is opened.
  */
-mailbot.onEvent('github', async function(bot) {
+mailbot.onEvent("github", async function(bot) {
   // In the Sandbox, adjust your filter to view API calls to see this API call
   // This creates a task and sends an email at the same time.
 
-  const githubAction = bot.get('payload.body_json.action');
+  const githubAction = bot.get("payload.body_json.action");
 
-  if (githubAction !== 'opened') {
+  if (githubAction !== "opened") {
     // a different event has occured
     return;
   }
@@ -30,7 +30,7 @@ mailbot.onEvent('github', async function(bot) {
 
     task: {
       stored_data: {
-        issueInfo: bot.get('payload.body_json'),
+        issueInfo: bot.get("payload.body_json"),
       },
       command: `github@${bot.config.mailDomain}`,
     },
@@ -46,13 +46,13 @@ mailbot.onEvent('github', async function(bot) {
 });
 
 // here comes the interesting part - those functions execute the actual github integration
-mailbot.onAction('comment', onComment);
-mailbot.onAction('github.close', onClose);
-mailbot.onAction('assign.self', onAssignSelf);
-mailbot.onAction('label.feature', onLabel('feature'));
-mailbot.onAction('label.wishlist', onLabel('wishlist'));
-mailbot.onAction('label.urgent', onLabel('urgent'));
-mailbot.onAction('label.bug', onLabel('bug'));
+mailbot.onAction("comment", onComment);
+mailbot.onAction("github.close", onClose);
+mailbot.onAction("assign.self", onAssignSelf);
+mailbot.onAction("label.feature", onLabel("feature"));
+mailbot.onAction("label.wishlist", onLabel("wishlist"));
+mailbot.onAction("label.urgent", onLabel("urgent"));
+mailbot.onAction("label.bug", onLabel("bug"));
 
 /******************************************************************************************
  *                                      Settings
@@ -61,9 +61,9 @@ mailbot.onAction('label.bug', onLabel('bug'));
 
 mailbot.onSettingsViewed(function(bot) {
   const mySettingsPage = bot.webhook.settingsPage({
-    namespace: 'github',
-    title: 'GitHub Integration Settings',
-    menuTitle: 'GitHub',
+    namespace: "github",
+    title: "GitHub Integration Settings",
+    menuTitle: "GitHub",
   });
 
   mySettingsPage.text(`
@@ -72,20 +72,20 @@ When a user installs your MailBot, they are taken the settings page for your ext
 
 Here, you can ask them to connect their GitHub account, or manually configure GitHub's webhooks  
 to point to their unique MailBot event URL which, in your case, is \`${bot.get(
-    'mailbot.event_url'
+    "mailbot.event_url"
   )}\` in this case. The "type" of the event used in the handler is passed in the URL. \`?type=github.issue.created\`.
 
   [More about event triggering](https://docs.mailbots.com/reference#event-triggering)
 `);
 
   mySettingsPage.input({
-    name: 'github_token',
-    title: 'Github token',
+    name: "github_token",
+    title: "Github token",
   });
 
   mySettingsPage.submitButton();
 
-  mySettingsPage.populate(bot.webhook.getMailBotData('github')); // Populate form values
+  mySettingsPage.populate(bot.webhook.getMailBotData("github")); // Populate form values
   // Note bot.webhook.respond() is NOT called
 });
 
