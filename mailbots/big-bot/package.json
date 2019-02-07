@@ -1,0 +1,31 @@
+{
+  "name": "fut-mailbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon -r dotenv/config ./app.js dotenv_config_path=./.env.local",
+    "dev:inspect": "nodemon --inspect-brk -r dotenv/config ./app.js dotenv_config_path=./.env.local",
+    "test": "NODE_ENV=testing mocha -r dotenv/config \"./lib/**/*.test.js\" dotenv_config_path=./.env.test",
+    "test:inspect": "npm run test -- --inspect-brk"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mailbots/mailbots-sdk": "^0.1.4-beta",
+    "dotenv": "^6.2.0",
+    "lodash": "^4.17.11",
+    "mailbots": "^0.2.0-beta",
+    "promise-mysql": "^3.3.1",
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "debug": "^4.1.1",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.9",
+    "supertest": "^3.4.2"
+  }
+}

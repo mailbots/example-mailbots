@@ -1,0 +1,94 @@
+{
+  "source": {
+    "type": "email",
+    "recipient": "hello@tasty-handcrafted.eml.bot",
+    "from": "someone@gmail.com",
+    "method": "bcc",
+    "to": ["hello@tasty-handcrafted.eml.bot"],
+    "cc": [],
+    "bcc": [],
+    "subject": "",
+    "html": "",
+    "text": "",
+    "headers": {
+      "to": "hello@tasty-handcrafted.eml.bot",
+      "cc": "",
+      "bcc": "",
+      "subject": "",
+      "from": "someone@gmail.com"
+    }
+  },
+  "command": {
+    "format": "hello",
+    "full_address": "hello@tasty-handcrafted.eml.bot"
+  },
+  "event": "task.created",
+  "version": "1",
+  "user": {
+    "id": 22278,
+    "name": "Reilly Sweetland",
+    "primary_email": "someone@gmail.com",
+    "emails": ["help@humans.fut.io", "someone@gmail.com"],
+    "is_validated": true,
+    "timezone": "America/Los_Angeles",
+    "preferred_date_format": "D, F jS Y g:ia T",
+    "preferred_date_format_js": "ddd, D MMMM YYYY h:mma",
+    "postpone_times": "mon,tues,weds,thurs,fri,sat,sun,3weekdays-r,1d-r,1week,3weeks,6weeks,3months,6months",
+    "flagged": 0,
+    "validate_sender_email": false,
+    "send_dev_errors": false,
+    "accepted_terms": false
+  },
+  "mailbot": {
+    "name": "Tasty Handcrafted (Blank)",
+    "subdomain": "tasty-handcrafted",
+    "stored_data": {
+      "access_token": "REDACTED"
+    },
+    "installed": true,
+    "event_url": "https://api.mailbots.com/api/v1/mailbot_event/603/fb1133e1c06d6f36/",
+    "id": 1585,
+    "owner": {
+      "email": "someone@gmail.com"
+    },
+    "description": "Hello World! See https://docs.mailbots.com/ to get started",
+    "icon": "https://fut-cdn.s3.amazonaws.com/mailbots/random-mailbot-icons/3.png",
+    "autocomplete_examples": "hello@tasty-handcrafted.eml.bot",
+    "tags": "",
+    "published": false,
+    "devmode": true,
+    "enabled": false,
+    "install_url": "https://redacted/auth/login",
+    "settings_url": "",
+    "base_url": "https://redacted",
+    "developer_name": "",
+    "help_url": "",
+    "learn_more_url": "",
+    "privacy_policy_url": "",
+    "oauth2_client_id": "ext_1952df98ce607a467db88f18707e9c37",
+    "oauth2_scope": "get_user_info mailbot_manage_self read_own_tasks manage_own_tasks",
+    "oauth2_redirect_uri": "https://redacted/auth/callback"
+  },
+  "task": {
+    "created": 1549489028,
+    "completed": false,
+    "completed_on": "",
+    "hash": "dfcf8bb46010120efce6f604a9303294",
+    "id": 26904843,
+    "trigger_time": null,
+    "trigger_timeformat": "",
+    "reference_email": {
+      "to": ["hello@tasty-handcrafted.eml.bot"],
+      "cc": [],
+      "bcc": [],
+      "from": "someone@gmail.com",
+      "reply_to": "",
+      "subject": "",
+      "html": "",
+      "text": "",
+      "attachments": []
+    },
+    "command": "hello@tasty-handcrafted.eml.bot",
+    "stored_data": null
+  }
+}
