@@ -6,7 +6,7 @@ module.exports = function(mailbot) {
    * todo@your-app.mailbots.com to create a new todo
    */
   mailbot.onCommand("todo", function(bot) {
-    bot.webhook.addEmail({
+    bot.webhook.sendEmail({
       to: bot.get("source.from"),
       from: "MailBots Todo",
       subject: bot.get("task.reference_email.subject"),
@@ -109,7 +109,7 @@ module.exports = function(mailbot) {
     const actionParts = bot.action.split(".");
     const reminderTime = actionParts[1];
     bot.webhook.setTriggerTime(reminderTime);
-    bot.webhook.addEmail({
+    bot.webhook.sendEmail({
       to: bot.get("source.from"),
       subject: "Reminder Scheduled",
       body: [
@@ -143,7 +143,7 @@ module.exports = function(mailbot) {
         //prettier-ignore
         pendingTasksHtml += `<p><a href="${bot.config.mailbotsAdmin}tasks/${task.id}" target="_blank">${subject}</a></p>`;
       });
-      const email = bot.webhook.addEmail({
+      const email = bot.webhook.sendEmail({
         to: bot.get("source.from"),
         from: "MailBots Todo",
         subject: "Pending Todos",
@@ -177,7 +177,7 @@ module.exports = function(mailbot) {
     bot.webhook.setTaskData({ notes: newNote });
 
     // Send confirmation email
-    bot.webhook.addEmail({
+    bot.webhook.sendEmail({
       to: bot.get("source.from"),
       subject: "Notes Added",
       body: [
@@ -202,7 +202,7 @@ module.exports = function(mailbot) {
     const reminderData = bot.webhook.completeTask();
     console.log(reminderData);
 
-    bot.webhook.addEmail({
+    bot.webhook.sendEmail({
       to: bot.get("source.from"),
       subject: "Task Completed",
       body: [
@@ -224,7 +224,7 @@ module.exports = function(mailbot) {
    * https://github.com/mailbots/mailbots#making-reusable-skills
    */
   mailbot.onTrigger("todo", function(bot) {
-    bot.webhook.addEmail({
+    bot.webhook.sendEmail({
       to: bot.get("source.from"),
       subject: "Reminder: " + bot.get("task.reference_email.subject"),
       body: [
@@ -320,7 +320,7 @@ module.exports = function(mailbot) {
    * https://github.com/mailbots/mailbots#making-reusable-skills
    */
   mailbot.onTaskViewed("todo", function(bot) {
-    bot.webhook.addEmail({
+    bot.webhook.sendEmail({
       to: bot.get("source.from"),
       from: "MailBots Todo",
       subject: bot.get("task.reference_email.subject"),

@@ -181,13 +181,13 @@ module.exports = function(mailbot) {
   }
 
   mailbot.onCommand("example-ticket", function(bot) {
-    bot.webhook.addEmail(getTicketEmail(bot));
+    bot.webhook.sendEmail(getTicketEmail(bot));
     bot.webhook.respond();
   });
 
   // Reusing the same email rendering logic
   mailbot.onTaskViewed("example-ticket", function(bot) {
-    bot.webhook.addEmail(getTicketEmail(bot));
+    bot.webhook.sendEmail(getTicketEmail(bot));
     bot.webhook.respond();
   });
 
@@ -403,7 +403,7 @@ module.exports = function(mailbot) {
       type: "html",
       text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
     });
-    bot.webhook.addEmail(email);
+    bot.webhook.sendEmail(email);
     bot.webhook.respond();
   });
 
@@ -413,7 +413,7 @@ module.exports = function(mailbot) {
   mailbot.onCommand("example-wunderlist", function(bot) {
     // This would operate similarly to the base todo app, but it would keep data in sync with Todoist.
     const todoSubject = bot.get("task.reference_email.subject") || "Buy Milk";
-    bot.webhook.addEmail({
+    bot.webhook.sendEmail({
       to: bot.get("source.from"),
       from: "MailBots Todoist",
       subject: todoSubject,

@@ -10,7 +10,7 @@ const { getProductHuntEmail } = require("./emails");
  */
 mailbot.onTrigger("producthunt-weekly", function(bot) {
   // Pull from Product Hunt API Mail Bots, then render email
-  bot.webhook.addEmail(getProductHuntEmail(bot));
+  bot.webhook.sendEmail(getProductHuntEmail(bot));
   bot.webhook.respond();
 });
 
@@ -20,7 +20,7 @@ mailbot.onTrigger("producthunt-weekly", function(bot) {
  */
 mailbot.onCommand("producthunt", function(bot) {
   // Pull from Product Hunt API Mail Bots, then render email
-  const email = bot.webhook.addEmail(getProductHuntEmail(bot));
+  const email = bot.webhook.sendEmail(getProductHuntEmail(bot));
   bot.webhook.respond();
 });
 
@@ -31,7 +31,7 @@ mailbot.onCommand("producthunt", function(bot) {
  */
 mailbot.onTaskViewed("producthunt-weekly", function(bot) {
   // Pull from Product Hunt API Mail Bots, render email
-  bot.webhook.addEmail(getProductHuntEmail(bot));
+  bot.webhook.sendEmail(getProductHuntEmail(bot));
   bot.webhook.respond();
 });
 
@@ -42,7 +42,7 @@ mailbot.onTaskViewed("producthunt-weekly", function(bot) {
  */
 mailbot.onTaskViewed("producthunt-daily", function(bot) {
   // Pull from Product Hunt API Mail Bots, render email
-  bot.webhook.addEmail(getProductHuntEmail(bot));
+  bot.webhook.sendEmail(getProductHuntEmail(bot));
   bot.webhook.respond();
 });
 

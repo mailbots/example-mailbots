@@ -13,7 +13,7 @@ module.exports = function(mailbot) {
     // @TODO: Roll back memorize skill to simpler version. Release here.
     return;
     memorize.memorizeTask(bot);
-    bot.webhook.addEmail({
+    bot.webhook.sendEmail({
       to: bot.get("source.from"),
       from: "MailBots Remember",
       subject: bot.get("task.reference_email.subject"),
@@ -43,7 +43,7 @@ module.exports = function(mailbot) {
 
   mailbot.on("task.triggered", function(bot) {
     memorize.memorizeTask(bot);
-    bot.webhook.addEmail({
+    bot.webhook.sendEmail({
       to: bot.get("source.from"),
       from: "MailBots Memorize",
       subject: bot.get("task.reference_email.subject"),

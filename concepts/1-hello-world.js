@@ -12,7 +12,7 @@ module.exports = function(mailbot) {
      * with skills and information to get stuff done. For example
      * let's send an email:
      */
-    bot.webhook.addEmail({
+    bot.webhook.sendEmail({
       to: bot.get("source.from"), // Send to the "from" address
       subject: `Hello ${bot.get("source.from")}!`,
       body: [

@@ -38,21 +38,21 @@ mailbot.onEvent("github.issue.opened", async function(bot) {
 });
 
 mailbot.onCommand("github", function(bot) {
-  bot.webhook.addEmail(getGithubEmail(bot));
+  bot.webhook.sendEmail(getGithubEmail(bot));
   bot.webhook.respond();
 });
 
 // Handle when a user views a github task on mailbots.com
 mailbot.onTaskViewed("github", function(bot) {
   // Pull the latest ticket info via github API. Send it in an email to the user using the same template as above.
-  bot.webhook.addEmail(getGithubEmail(bot));
+  bot.webhook.sendEmail(getGithubEmail(bot));
   bot.webhook.respond();
 });
 
 // When a task reminder triggers we send an email to the user (note this is identical to the viewing logic above)
 mailbot.onTrigger("github", function(bot) {
   // Pull the latest ticket info via github API. Send it in an email to the user using the same template as above.
-  bot.webhook.addEmail(getGithubEmail(bot));
+  bot.webhook.sendEmail(getGithubEmail(bot));
   bot.webhook.respond();
 });
 

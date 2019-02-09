@@ -22,7 +22,7 @@ mailbot.onCommand("shop", async function(bot) {
 
   // We're only handling FindItem right now. Add / train more intents on Luis.ai
   if (topIntent != "Shopping.FindItem") {
-    bot.webhook.addEmail(getFailureEmail(bot));
+    bot.webhook.sendEmail(getFailureEmail(bot));
     return bot.webhook.respond({
       webhook: {
         status: "warn",
@@ -38,7 +38,7 @@ mailbot.onCommand("shop", async function(bot) {
 
   // No keyphrase? Fail and return
   if (!keyPhrases || !keyPhrases.length) {
-    bot.webhook.addEmail(getFailureEmail(bot));
+    bot.webhook.sendEmail(getFailureEmail(bot));
     return bot.webhook.respond({
       webhook: {
         status: "warn",
@@ -57,7 +57,7 @@ mailbot.onCommand("shop", async function(bot) {
     encodeURIComponent(searchPhrases[0]);
 
   // Send the email with the magical shopping button.
-  bot.webhook.addEmail(getSuccessEmail({ bot, searchUrl, searchPhrases }));
+  bot.webhook.sendEmail(getSuccessEmail({ bot, searchUrl, searchPhrases }));
   bot.webhook.respond();
 });
 

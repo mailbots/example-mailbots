@@ -2,14 +2,14 @@ exports.getFailureEmail = function(bot) {
   const shoppingEmail = {
     to: bot.get("source.from"),
     from: "MailBots NLP Shopping",
-    subject: "Me not so smart",
+    subject: "I didn't catch that...",
     body: [
       {
-        type: "html",
-        text: `<p>I can't understand these words. :(</p>`
+        type: "text",
+        text: `I can't understand these words. :(`
       },
       {
-        type: "section"
+        type: "spacer"
       }
     ]
   };
@@ -23,16 +23,17 @@ exports.getSuccessEmail = function({ bot, searchUrl, searchPhrases }) {
     subject: bot.get("task.reference_email.subject"),
     body: [
       {
-        type: "html",
-        text: `<p>Here's your shopping link!</p>`
+        type: "text",
+        text: `Here's your shopping link!`
       },
       {
         type: "button",
+        behavior: "url",
         text: `Go shopping!`,
         url: searchUrl
       },
       {
-        type: "section"
+        type: "spacer"
       }
     ]
   };

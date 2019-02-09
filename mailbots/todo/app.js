@@ -15,6 +15,7 @@ const mailbot = new MailBots();
  * @return {object} email
  */
 function getTodoEmail(bot) {
+  const textCSs = `font-family: \'Helvetica Neue\', Helvetica, Arial; font-size: 13px; line-height: 16px; color: #111111; margin: 0; padding: 0 5px 0 4px;`;
   const todoEmail = {
     to: bot.get("source.from"),
     from: "MailBots Todo",
@@ -22,20 +23,21 @@ function getTodoEmail(bot) {
     body: [
       {
         type: "html",
-        text: `<p>This is a complete todo example applicaiton. Add 
+        html: `<p style=${textCSs}>This is a complete todo example applicaiton. Add 
           notes, reminders, view and complete todo items right 
           from your inbox. View 'examples/todo-app.js' file to 
           see how it works and customize.</p><hr />`
       },
       {
         type: "html",
-        text: `<h1>
+        html: `<h1>
                     Todo: ${bot.get("task.reference_email.subject")}
                 </h1>`
       },
       {
         type: "button",
         text: "Complete",
+        behavior: "action",
         action: "complete",
         style: "primary",
         subject: "Hit Send to Complete this task",
@@ -45,11 +47,12 @@ function getTodoEmail(bot) {
       {
         type: "button",
         text: "View Task",
+        behavior: "url",
         url: `${bot.config.mailbotsAdmin}tasks/${bot.get("task.id")}`
       },
       {
         type: "html",
-        text: `<table border=0" style="clear: both">
+        html: `<table border=0" style="clear: both">
                 <tr>
                     <td>
                         <h4>NOTES</h4>
@@ -63,12 +66,13 @@ function getTodoEmail(bot) {
       },
       {
         type: "button",
+        behavior: "action",
         text: "Add Notes",
         action: "add_notes",
         subject: "Add your notes to the email body"
       },
       {
-        type: "section"
+        type: "spacer"
       },
       {
         type: "title",
@@ -77,6 +81,7 @@ function getTodoEmail(bot) {
       {
         type: "button",
         text: "tomorrow",
+        behavior: "action",
         action: `remind.tomorrow`,
         subject: `Schedule a reminder for tomorrow`,
         body: ""
@@ -84,6 +89,7 @@ function getTodoEmail(bot) {
       {
         type: "button",
         text: "3days",
+        behavior: "action",
         action: `remind.3days`,
         subject: `Schedule a reminder for 3 days`,
         body: ""
@@ -91,6 +97,7 @@ function getTodoEmail(bot) {
       {
         type: "button",
         text: "nextWeek",
+        behavior: "action",
         action: `remind.nextWeek`,
         subject: `Schedule a reminder for next week`,
         body: ""
@@ -98,12 +105,13 @@ function getTodoEmail(bot) {
       {
         type: "button",
         text: "nextMonth",
+        behavior: "action",
         action: `remind.nextMonth`,
         subject: `Schedule a reminder for next month`,
         body: ""
       },
       {
-        type: "section"
+        type: "spacer"
       }
     ]
   };
@@ -117,7 +125,7 @@ function getTodoEmail(bot) {
  * By default, tasks are not marked as completed.
  */
 mailbot.onCommand("todo", function(bot) {
-  bot.webhook.addEmail(getTodoEmail(bot));
+  bot.webhook.sendEmail(getTodoEmail(bot));
   bot.webhook.respond();
 });
 
@@ -130,7 +138,7 @@ mailbot.onCommand("todo", function(bot) {
  * https://github.com/mailbots/mailbots#making-reusable-skills
  */
 mailbot.onTrigger("todo", function(bot) {
-  bot.webhook.addEmail(getTodoEmail(bot));
+  bot.webhook.sendEmail(getTodoEmail(bot));
   bot.webhook.respond();
 });
 
@@ -143,7 +151,7 @@ mailbot.onTrigger("todo", function(bot) {
  * https://github.com/mailbots/mailbots#making-reusable-skills
  */
 mailbot.onTaskViewed("todo", function(bot) {
-  bot.webhook.addEmail(getTodoEmail(bot));
+  bot.webhook.sendEmail(getTodoEmail(bot));
   bot.webhook.respond();
 });
 
@@ -173,7 +181,7 @@ mailbot.onCommand("my-todos", async function(bot) {
       pendingTasksHtml += `<p><a href="${bot.config.mailbotsAdmin}tasks/${task.id}" target="_blank">${subject}</a></p>`;
     });
 
-    const email = bot.webhook.addEmail({
+    const email = bot.webhook.sendEmail({
       to: bot.get("source.from"),
       from: "MailBots Todo",
       subject: "Pending Todos",
@@ -209,7 +217,7 @@ mailbot.onAction(/remind/, function(bot) {
   bot.webhook.setTriggerTime(reminderTime);
 
   // Send confirmation email
-  bot.webhook.addEmail({
+  bot.webhook.sendEmail({
     to: bot.get("source.from"),
     subject: "Reminder Scheduled",
     body: [
@@ -233,7 +241,7 @@ mailbot.onAction("add_notes", function(bot) {
   bot.webhook.setTaskData({ notes: newNote });
 
   // Send confirmation email
-  bot.webhook.addEmail({
+  bot.webhook.sendEmail({
     to: bot.get("source.from"),
     subject: "Notes Added",
     body: [
@@ -255,7 +263,7 @@ mailbot.onAction("add_notes", function(bot) {
  */
 mailbot.onAction("complete", function(bot) {
   bot.webhook.completeTask();
-  bot.webhook.addEmail({
+  bot.webhook.sendEmail({
     to: bot.get("source.from"),
     subject: "Task Completed",
     body: [

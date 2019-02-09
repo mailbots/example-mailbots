@@ -1,6 +1,6 @@
 {
   "name": "@mailbots/example-mailbots",
-  "version": "0.1.0-beta",
+  "version": "1.0.0-beta",
   "description": "Example MailBots",
   "scripts": {
     "start": "echo \"Run each MailBot independently\" && exit 1"

@@ -17,7 +17,7 @@ module.exports = function(mailbot) {
       bot.webhook.sendEmail({
         to: bot.get("source.from"),
         subject: "An error happened",
-        body: [{ type: "html", text: `The error was ${e.message}` }]
+        body: [{ type: "text", text: `The error was ${e.message}` }]
       });
       bot.webhook.respond();
     }

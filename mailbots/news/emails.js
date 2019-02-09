@@ -6,7 +6,7 @@ exports.getProductHuntEmail = function(bot) {
     body: [
       {
         type: "html",
-        text: `<div style="padding: 0px; margin: 0px; clear: both">
+        html: `<div style="padding: 0px; margin: 0px; clear: both">
                               <br />
                               <h1><img src="http://fut-cdn.s3.amazonaws.com/gopher-demo-2017/ph.png" height="30px" align="absmiddle" /> Product Hunt Today </h1>
                               </div>`
@@ -42,7 +42,7 @@ exports.getProductHuntEmail = function(bot) {
     email.body.push(
       {
         type: "html",
-        text: `<table border="0" width="100%" style="float: left; margin-top: 10px">
+        html: `<table border="0" width="100%" style="float: left; margin-top: 10px">
                               <tr>
                                   <td valign="top" width="75px">
                                        <img width="75px" src="${product.img}">
@@ -64,6 +64,7 @@ exports.getProductHuntEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "action",
         text: "upvote",
         action: "upvote.332432",
         subject: "Hit send to upvote on Product Hunt",
@@ -71,6 +72,7 @@ exports.getProductHuntEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "action",
         text: "comment",
         action: "comment.332432",
         subject: "Hit send to leave your comment on Product Hunt",
@@ -78,27 +80,33 @@ exports.getProductHuntEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "url",
         text: "view",
         url: `https://www.producthunt.com`
       },
       {
         type: "button",
+        behavior: "action",
         text: "save:tech",
         action: "save.tech",
         subject: "Hit 'send' to save this product to your tech list"
       },
       {
         type: "button",
+        behavior: "action",
         text: "save:productivity",
-        url: `https://www.producthunt.com`
+        action: "save.productivity",
+        subject: "Hit 'send' to save this product to your productivity list"
       },
       {
         type: "button",
+        behavior: "action",
         text: "save:books",
-        url: `https://www.producthunt.com`
+        action: "save.books",
+        subject: "Hit 'send' to save this product to your books list"
       },
       {
-        type: "section"
+        type: "spacer"
       }
     );
   });
@@ -106,11 +114,12 @@ exports.getProductHuntEmail = function(bot) {
   // Add email footer
   email.body.push(
     {
-      type: "section",
-      title: "CHANGE SUBSCRIPTION"
+      type: "label",
+      text: "CHANGE SUBSCRIPTION"
     },
     {
       type: "button",
+      behavior: "action",
       text: "daily",
       action: "assign.self",
       subject: "Hit send to assign this issue to yourself",
@@ -118,6 +127,7 @@ exports.getProductHuntEmail = function(bot) {
     },
     {
       type: "button",
+      behavior: "action",
       text: "weekly",
       action: "assign.self",
       subject: "Hit send to assign this issue to yourself",
@@ -125,14 +135,14 @@ exports.getProductHuntEmail = function(bot) {
     },
     {
       type: "button",
+      behavior: "action",
       text: "monthly",
       action: "assign.self",
       subject: "Hit send to assign this issue to yourself",
       body: ``
     },
     {
-      type: "html",
-      text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
+      type: "spacer"
     }
   );
   return email;
