@@ -6,7 +6,7 @@ exports.getFailureEmail = function(bot) {
     body: [
       {
         type: "text",
-        text: `I can't understand these words. :(`
+        text: `Sorry, I didn't quite catch that.`
       },
       {
         type: "spacer"
@@ -16,24 +16,63 @@ exports.getFailureEmail = function(bot) {
   return shoppingEmail;
 };
 
-exports.getSuccessEmail = function({ bot, searchUrl, searchPhrases }) {
+exports.getFindItemEmail = function({ bot, searchUrl, searchPhrases }) {
   return {
     to: bot.get("source.from"),
     from: "MailBots NLP Shopping",
-    subject: bot.get("task.reference_email.subject"),
+    subject: "Re: " + bot.get("task.reference_email.subject"),
     body: [
       {
         type: "text",
-        text: `Here's your shopping link!`
+        text: `Here is good selection of ${searchPhrases[0]}`
       },
       {
         type: "button",
         behavior: "url",
-        text: `Go shopping!`,
+        text: `Shop For ${searchPhrases[0]}`,
         url: searchUrl
       },
       {
         type: "spacer"
+      },
+      {
+        type: "html",
+        html: `<pre>Output from LUIS: \n\n ${JSON.stringify(
+          bot.skills.luis,
+          null,
+          4
+        )} </pre>`
+      }
+    ]
+  };
+};
+
+exports.getBuyItemEmail = function({ bot, searchUrl, searchPhrases }) {
+  return {
+    to: bot.get("source.from"),
+    from: "MailBots NLP Shopping",
+    subject: "Re: " + bot.get("task.reference_email.subject"),
+    body: [
+      {
+        type: "text",
+        text: `Here is a link where you can buy ${searchPhrases[0]}`
+      },
+      {
+        type: "button",
+        behavior: "url",
+        text: `Buy ${searchPhrases}`,
+        url: searchUrl
+      },
+      {
+        type: "spacer"
+      },
+      {
+        type: "html",
+        html: `<pre>Output from LUIS: \n\n ${JSON.stringify(
+          bot.skills.luis,
+          null,
+          4
+        )} </pre>`
       }
     ]
   };
