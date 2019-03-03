@@ -6,60 +6,58 @@ const { getSuccessEmail, getFailureEmail } = require("./emails");
 const {
   createLuisAiSettingsPage,
   getTopIntent,
-  getIntents,
-  getKeyPhrases
-} = require("./luis");
+  getKeyPhrases,
+  luisMiddleware,
+  luisConfig
+} = require("@mailbots/luis-ai");
 
-// Render Luis.ai settings page
-mailbot.onSettingsViewed(createLuisAiSettingsPage);
+// OPTIONAL: Instead of explicitly calling LUIS functions as shown below,
+// the middlware runs every request through LUIS with bot.skills.luis
+mailbot.app.use(luisMiddleware({ endpoint: process.env.LUIS_ENDPOINT }));
 
-// When someone sends "shop@your-bot.eml.bot", we'll do this
+// Configure endpoint (not needed if you're only using middleware);
+luisConfig({ endpoint: process.env.LUIS_ENDPOINT });
+
+// When someone sends "shop@your-bot.eml.bot"
 mailbot.onCommand("shop", async function(bot) {
+  // console.log(bot.skills.luis); // FUll LUIS output is also available here thanks to middlware
   const topIntent = await getTopIntent(bot);
 
-  // If we wanted to inspect all possible intents and their probabilities
+  // Inspect all possible intents and their probabilities
   //const allIntents = await getIntents(bot);
 
   // We're only handling FindItem right now. Add / train more intents on Luis.ai
   if (topIntent != "Shopping.FindItem") {
     bot.webhook.sendEmail(getFailureEmail(bot));
-    return bot.webhook.respond({
-      webhook: {
-        status: "warn",
-        message:
-          "This demo MailBot only handles the Shopping.FindItem intent. Luis.ai found this: " +
-          topIntent
-      }
-    });
+    //prettier-ignore
+    return bot.webhook.respond({ webhook: { status: "warn", message: "This demo MailBot only handles the Shopping.FindItem intent. Luis.ai found this: " + topIntent } });
   }
 
-  // Note: Key Phrases are only present if you add them in Luis.ai under Build > Entities.
+  // Extract Key Phrases (only present if you add them in Luis.ai under Build > Entities)
   const keyPhrases = await getKeyPhrases(bot);
 
   // No keyphrase? Fail and return
   if (!keyPhrases || !keyPhrases.length) {
     bot.webhook.sendEmail(getFailureEmail(bot));
-    return bot.webhook.respond({
-      webhook: {
-        status: "warn",
-        message:
-          "No Key Phrases. Did you enable them in Luis.ai under Build > Entities?"
-      }
-    });
+    // prettier-ignore
+    return bot.webhook.respond({ webhook: { status: "warn", message: "No Key Phrases. Did you enable them in Luis.ai under Build > Entities?" } });
   }
 
   // Pull search string only
   const searchPhrases = keyPhrases.map(entity => entity.entity);
 
-  // Assuming the user only searched for one thing...
+  // Build search query
   let searchUrl =
     "https://www.amazon.com/s/?field-keywords=" +
     encodeURIComponent(searchPhrases[0]);
 
-  // Send the email with the magical shopping button.
+  // Send email with magical shopping button.
   bot.webhook.sendEmail(getSuccessEmail({ bot, searchUrl, searchPhrases }));
   bot.webhook.respond();
 });
+
+// DEMO ONLY: Render Luis.ai settings page for developer setup
+mailbot.onSettingsViewed(createLuisAiSettingsPage);
 
 // Start listening for requests
 mailbot.listen();

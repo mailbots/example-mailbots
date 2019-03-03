@@ -1,6 +1,6 @@
 {
   "name": "mailbots-natural-language-processing",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,11 +10,10 @@
   "author": "Reilly Sweetland",
   "license": "MIT",
   "dependencies": {
+    "@mailbots/luis-ai": "^1.0.0",
     "@mailbots/mailbots-sdk": "^0.1.4-beta",
     "dotenv": "6.0.0",
-    "mailbots": "^0.2.2-beta",
-    "request-promise": "",
-    "striptags": ""
+    "mailbots": "^0.2.2-beta"
   },
   "devDependencies": {
     "nodemon": "^1.18.9"
