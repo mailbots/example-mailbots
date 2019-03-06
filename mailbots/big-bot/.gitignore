@@ -1,5 +1,0 @@
-.env*
-!.env.example
-node_modules
-.vscode
-ngrok.yml
