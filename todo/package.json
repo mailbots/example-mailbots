@@ -14,9 +14,9 @@
   "author": "Reilly Sweetland",
   "license": "ISC",
   "dependencies": {
-    "@mailbots/mailbots-sdk": "^0.1.4-beta",
+    "@mailbots/mailbots-sdk": "1.0.1",
     "dotenv": "^6.2.0",
-    "mailbots": "^0.2.2-beta",
+    "mailbots": "1.0.1",
     "nodemon": "^1.18.9"
   }
 }
