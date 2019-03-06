@@ -11,9 +11,9 @@
   "license": "MIT",
   "dependencies": {
     "@mailbots/luis-ai": "^1.0.0",
-    "@mailbots/mailbots-sdk": "^0.1.4-beta",
+    "@mailbots/mailbots-sdk": "1.0.1",
     "dotenv": "6.0.0",
-    "mailbots": "^0.2.2-beta"
+    "mailbots": "1.0.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.9"
