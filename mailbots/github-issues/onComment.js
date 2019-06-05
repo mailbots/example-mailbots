@@ -2,7 +2,7 @@ const TurndownService = require("turndown");
 const axios = require("axios");
 
 module.exports = async bot => {
-  const githubToken = bot.get("mailbot.stored_data.github.github_token");
+  const githubToken = bot.get("mailbot.stored_data.github.token.access_token");
   const issueInfo = bot.get("task.stored_data.issueInfo");
 
   //the email html is the comment content

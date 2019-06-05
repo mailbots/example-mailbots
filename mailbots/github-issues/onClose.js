@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 module.exports = async bot => {
-  const githubToken = bot.get("mailbot.stored_data.github.github_token");
+  const githubToken = bot.get("mailbot.stored_data.github.token.access_token");
   const issueInfo = bot.get("task.stored_data.issueInfo");
 
   const repoFullName = issueInfo.repository.full_name;
@@ -10,6 +10,9 @@ module.exports = async bot => {
   const url = `https://api.github.com/repos/${repoFullName}/issues/${issueNo}?state=closed&access_token=${githubToken}`;
 
   await axios.patch(url, { state: "closed" });
+
+  // close this task
+  bot.webhook.completeTask();
 
   bot.set("webhook.status", "info");
   bot.set(

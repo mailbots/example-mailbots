@@ -1,37 +1,24 @@
-exports.getGithubEmail = function(bot) {
-  // pull some useful information out of the github webhook body
-  const title = bot.get(
-    "payload.body_json.issue.title",
-    "Re: [mailbots/mailbots] Example ticket title"
-  );
-  const body = bot.get(
-    "payload.body_json.issue.body",
-    `The body of the issue would go here.`
-  );
-  const issueUrl = bot.get(
-    "payload.body_json.issue.html_url",
-    `https://github.com`
-  );
-  const repoName = bot.get("payload.body_json.repository.name");
-  const creator = bot.get("payload.body_json.sender.login", `Reilly Sweetland`);
-  const avatarUrl = bot.get(
-    "payload.body_json.sender.avatar_url",
-    `https://avatars3.githubusercontent.com/u/81267?s=460&v=4`
-  );
+exports.getGithubEmail = function(from, issueInfo) {
+  const title = issueInfo.issue.title;
+  const body = issueInfo.issue.body;
+  const issueUrl = issueInfo.issue.html_url;
+  const repoName = issueInfo.repository.name;
+  const creator = issueInfo.sender.login;
+  const avatarUrl = issueInfo.sender.avatar_url;
 
   const gitHubEmail = {
     type: "email",
-    to: bot.get("source.from"),
-    subject: `New issue for repo ${repoName}. Issue: ${title}; `,
+    to: from,
+    subject: `New issue for repo ${repoName}. Issue: ${title}`,
     body: [
       {
         type: "html",
-        text: `<p>This email would be sent in place of the normal Github email notification, 
-              allowing the recipient to take various actions on the ticket without leaving 
+        html: `<p>This email would be sent in place of the normal Github email notification,
+              allowing the recipient to take various actions on the ticket without leaving
               their inbox.</p><hr />`
       },
       {
-        type: "section",
+        type: "label",
         text: "GITHUB ISSUE"
       },
       {
@@ -40,15 +27,16 @@ exports.getGithubEmail = function(bot) {
       },
       {
         type: "html",
-        text: `<img src="${avatarUrl}" width="25" height="25" valign="middle" /> ${creator}<br /><br />
+        html: `<img src="${avatarUrl}" width="25" height="25" valign="middle" /> ${creator}<br /><br />
         ${body}</img>`
       },
       {
-        type: "section",
+        type: "label",
         text: "ADD LABELS"
       },
       {
         type: "button",
+        behavior: "action",
         text: "feature",
         action: "label.feature",
         subject: "Hit send to add 'feature' label ",
@@ -56,6 +44,7 @@ exports.getGithubEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "action",
         text: "docs",
         action: "label.wishlist",
         subject: "Hit send to add 'wishlist' label ",
@@ -63,6 +52,7 @@ exports.getGithubEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "action",
         text: "urgent",
         action: "label.urgent",
         subject: "Hit send to add 'urgent' label ",
@@ -70,17 +60,19 @@ exports.getGithubEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "action",
         text: "bug",
         action: "label.bug",
         subject: "Hit send to add 'bug' label ",
         body: ``
       },
       {
-        type: "section",
+        type: "label",
         text: "ASSIGN"
       },
       {
         type: "button",
+        behavior: "action",
         text: "myself",
         action: "assign.self",
         subject: "Hit send to assign this issue to yourself",
@@ -88,14 +80,15 @@ exports.getGithubEmail = function(bot) {
       },
       {
         type: "html",
-        text: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
+        html: '<div style="padding: 0px; margin: 0px; clear: both"></div>'
       },
       {
-        type: "section",
+        type: "label",
         text: "ACTIONS"
       },
       {
         type: "button",
+        behavior: "action",
         text: "Comment",
         action: "comment",
         subject: "Hit send to add your comment",
@@ -104,6 +97,7 @@ exports.getGithubEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "action",
         text: "Close Issue",
         action: "github.close",
         subject: "Close issue in Github",
@@ -112,16 +106,18 @@ exports.getGithubEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "url",
         text: "View On Github",
         url: issueUrl,
         style: "block"
       },
       {
-        type: "section",
+        type: "label",
         text: "FOLLOW UP"
       },
       {
         type: "button",
+        behavior: "action",
         text: "tomorrow",
         action: `remind.tomorrow`,
         subject: `Schedule a reminder for tomorrow`,
@@ -129,6 +125,7 @@ exports.getGithubEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "action",
         text: "3days",
         action: `remind.3days`,
         subject: `Schedule a reminder for 3 days`,
@@ -136,6 +133,7 @@ exports.getGithubEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "action",
         text: "nextWeek",
         action: "remind.nextWeek",
         subject: "Schedule a reminder for next week",
@@ -143,13 +141,14 @@ exports.getGithubEmail = function(bot) {
       },
       {
         type: "button",
+        behavior: "action",
         text: "nextMonth",
         action: `remind.nextMonth`,
         subject: `Schedule a reminder for next month`,
         body: ""
       },
       {
-        type: "section"
+        type: "label"
       }
     ]
   };

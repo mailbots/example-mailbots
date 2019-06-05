@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 module.exports = async bot => {
-  const githubToken = bot.get("mailbot.stored_data.github.github_token");
+  const githubToken = bot.get("mailbot.stored_data.github.token.access_token");
   const issueInfo = bot.get("task.stored_data.issueInfo");
 
   const repoFullName = issueInfo.repository.full_name;
