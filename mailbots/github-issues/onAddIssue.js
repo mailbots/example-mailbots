@@ -24,6 +24,9 @@ module.exports = async bot => {
     body: commentMd
   });
 
+  // complete task
+  bot.webhook.completeTask();
+
   // respond to webhook
   bot.set("webhook.status", "info");
   bot.set(
