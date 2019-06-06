@@ -2,17 +2,18 @@ require("dotenv").config();
 const MailBots = require("mailbots");
 const mailbot = new MailBots();
 const MailBotsApi = require("@mailbots/mailbots-sdk");
-const { oauthLoginUrl } = require('@octokit/oauth-login-url');
+const { oauthLoginUrl } = require("@octokit/oauth-login-url");
 const { getGithubEmail } = require("./emails");
-const axios = require('axios');
-const qs = require('querystring');
-const GitHub = require('github-api');
+const axios = require("axios");
+const qs = require("querystring");
+const GitHub = require("github-api");
 
 const onComment = require("./onComment");
 const onAssignSelf = require("./onAssignSelf");
 const onClose = require("./onClose");
 const onLabel = require("./onLabel");
 const onRemind = require("./onRemind");
+const markdown = require("./markdown");
 
 const githubCredentials = {
   clientId: process.env.GITHUB_CLIENT_ID,
@@ -25,8 +26,6 @@ const githubCredentials = {
  */
 mailbot.app.get("/oauth-callback", async (req, res) => {
   try {
-    console.log(req.query);
-
     // exchange code for access token
     const url = `https://github.com/login/oauth/access_token`;
     const result = await axios.post(url, {
@@ -56,10 +55,7 @@ mailbot.app.get("/oauth-callback", async (req, res) => {
 /**
  * Create a MailBots task when a Github issue is opened.
  */
-mailbot.onEvent("github", async function(bot) {
-  // In the Sandbox, adjust your filter to view API calls to see this API call
-  // This creates a task and sends an email at the same time.
-
+mailbot.onEvent("github", async function (bot) {
   const githubAction = bot.get("payload.body_json.action");
 
   if (githubAction !== "opened") {
@@ -94,19 +90,21 @@ mailbot.onEvent("github", async function(bot) {
 mailbot.onAction("comment", onComment);
 mailbot.onAction("github.close", onClose);
 mailbot.onAction("assign.self", onAssignSelf);
-mailbot.onAction("label.bug", onLabel("bug"));
 mailbot.onAction("label.feature", onLabel("feature"));
 mailbot.onAction("label.wishlist", onLabel("wishlist"));
 mailbot.onAction("label.urgent", onLabel("urgent"));
+mailbot.onAction("label.bug", onLabel("bug"));
 mailbot.onAction("remind.3days", onRemind("3days"));
 mailbot.onAction("remind.tomorrow", onRemind("tomorrow"));
 mailbot.onAction("remind.nextWeek", onRemind("nextWeek"));
 mailbot.onAction("remind.nextMonth", onRemind("nextMonth"));
 
-mailbot.onTrigger('github', bot => {
+mailbot.onTrigger("github", bot => {
   // complete this task
   const issueInfo = bot.get("task.stored_data.issueInfo");
-  bot.webhook.sendEmail(getGithubEmail(bot.get("task.reference_email.from"), issueInfo));
+  bot.webhook.sendEmail(
+    getGithubEmail(bot.get("task.reference_email.from"), issueInfo)
+  );
   bot.webhook.respond();
 });
 
@@ -115,20 +113,7 @@ mailbot.onTrigger('github', bot => {
  *                      https://docs.mailbots.com/reference#mailbot-settings
  *****************************************************************************************/
 
-mailbot.onSettingsViewed(async function(bot) {
-
-//   mySettingsPage.text(`
-// ### How To Connect GitHub
-// When a user installs your MailBot, they are taken the settings page for your extension (this page).
-
-// Here, you can ask them to connect their GitHub account, or manually configure GitHub's webhooks
-// to point to their unique MailBot event URL which, in your case, is \`${bot.get(
-//     "mailbot.event_url"
-//   )}\` in this case. The "type" of the event used in the handler is passed in the URL. \`?type=github.issue.created\`.
-
-//   [More about event triggering](https://docs.mailbots.com/reference#event-triggering)
-// `);
-
+mailbot.onSettingsViewed(async function (bot) {
   const botData = bot.webhook.getMailBotData();
   if (botData.github) {
     const mySettingsPage = bot.webhook.settingsPage({
@@ -143,9 +128,7 @@ mailbot.onSettingsViewed(async function(bot) {
     const me = github.getUser();
     const repos = await me.listRepos();
 
-    mySettingsPage.text(
-`#### Choose the repositories that you want to use with this mailbot`
-    );
+    mySettingsPage.text(markdown.reposPickDescriptionText);
     repos.data.forEach(repo => {
       mySettingsPage.checkbox({
         name: repo.name,
@@ -166,29 +149,32 @@ mailbot.onSettingsViewed(async function(bot) {
     const oauth = oauthLoginUrl({
       clientId: githubCredentials.clientId,
       redirectUri: githubCredentials.redirectUri,
-      scopes: ['repo'],
-      state: String(Date.now()),
+      scopes: ["repo"],
+      state: String(Date.now())
     });
+    mySettingsPage.text(markdown.notAuthorizedText);
     mySettingsPage.text(`[Begin GitHub OAuth](${oauth.url})`);
   }
 });
 
 mailbot.beforeSettingsSaved(async bot => {
   try {
-    // assuming the same "todo" namespace as shown in the above examples
-    const repos = bot.get("settings.github_repos");
-    if (repos) {
-      const botData = bot.webhook.getMailBotData();
-      const github = new GitHub({
-        token: botData.github.token.access_token
-      });
-      const me = github.getUser();
-      const { data: profile } = await me.getProfile();
-      for (let repoName in repos) {
-        const repo = github.getRepo(profile.login, repoName);
+    const settings = bot.get("settings.github_repos");
+    const reposToInstall = Object.keys(settings).filter(r => settings[r]);
+    const botData = bot.webhook.getMailBotData();
+    const github = new GitHub({
+      token: botData.github.token.access_token
+    });
+    const me = github.getUser();
+    const { data: profile } = await me.getProfile();
+    const alreadyInstalledRepos = botData.installed_repos || [];
+    const eventUrl = bot.get("mailbot.event_url");
 
+    // install hooks for newly selected repos
+    for (let repoName of reposToInstall) {
+      const repo = github.getRepo(profile.login, repoName);
+      if (!alreadyInstalledRepos.some(r => r === repoName)) {
         // create the webhook
-        const eventUrl = bot.get("mailbot.event_url");
         await repo.createHook({
           name: "web",
           config: {
@@ -199,6 +185,26 @@ mailbot.beforeSettingsSaved(async bot => {
         });
       }
     }
+
+    // uninstall hooks for deselected repos
+    const reposToUninstall = alreadyInstalledRepos.filter(
+      r => !reposToInstall.includes(r)
+    );
+    for (let repoName of reposToUninstall) {
+      const repo = github.getRepo(profile.login, repoName);
+      const { data: hooks } = await repo.listHooks();
+
+      // check which hook matches our url
+      const ownHook = hooks.find(h => h.config.url.includes(eventUrl));
+      if (ownHook) {
+        await repo.deleteHook(ownHook.id);
+      }
+    }
+
+    bot.webhook.setMailBotData("installed_repos", reposToInstall);
+
+    // workaround for the settings save bug
+    bot.webhook.setMailBotData("github_repos", bot.get("settings.github_repos"));
   } catch (error) {
     console.error(error);
     return bot.webhook.respond({
@@ -210,8 +216,43 @@ mailbot.beforeSettingsSaved(async bot => {
   }
 });
 
-mailbot.on("mailbot.uninstalled", bot => {
-  bot.webhook.respond();
+/******************************************************************************************
+ *                                      Lifecycle hooks
+ *                      https://docs.mailbots.com/reference#webhooks
+ *****************************************************************************************/
+
+mailbot.on("mailbot.uninstalled", async bot => {
+  try {
+    const botData = bot.webhook.getMailBotData();
+    const github = new GitHub({
+      token: botData.github.token.access_token
+    });
+    const me = github.getUser();
+    const { data: profile } = await me.getProfile();
+
+    // uninstall active hooks
+    const alreadyInstalledRepos = botData.installed_repos || [];
+    const eventUrl = bot.get("mailbot.event_url");
+    for (let repoName of alreadyInstalledRepos) {
+      const repo = github.getRepo(profile.login, repoName);
+      const { data: hooks } = await repo.listHooks();
+
+      // check which hook matches our url
+      const ownHook = hooks.find(h => h.config.url.includes(eventUrl));
+      if (ownHook) {
+        await repo.deleteHook(ownHook.id);
+      }
+    }
+
+    bot.webhook.respond();
+  } catch (error) {
+    return bot.webhook.respond({
+      webhook: {
+        status: "error",
+        message: error.message
+      }
+    });
+  }
 });
 
 mailbot.listen();
