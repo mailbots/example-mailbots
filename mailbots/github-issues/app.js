@@ -58,6 +58,18 @@ mailbot.app.get("/oauth-callback", async (req, res) => {
 mailbot.onEvent("github", async function (bot) {
   const githubAction = bot.get("payload.body_json.action");
 
+  // when an issue is closed, try to see if we have
+  // a task for it and mark it as complete
+  if (githubAction === "closed") {
+    const issueInfo = bot.get("payload.body_json");
+    const mbClient = MailBotsApi.fromBot(bot);
+    const result = await mbClient.getTasks({ search_key: issueInfo.issue.number });
+    const task = result.tasks[0];
+    if (task) {
+      await mbClient.completeTask({ task: { id: task.id } });
+    }
+  }
+
   if (githubAction !== "opened") {
     // a different event has occured
     return bot.webhook.respond();
@@ -73,7 +85,8 @@ mailbot.onEvent("github", async function (bot) {
       stored_data: {
         issueInfo
       },
-      command: `github@${bot.config.mailDomain}`
+      command: `github@${bot.config.mailDomain}`,
+      search_keys: [issueInfo.issue.number]
     },
     send_messages: [getGithubEmail(bot.get("source.from"), issueInfo)] // send an email when creating the task
   };
