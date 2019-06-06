@@ -19,7 +19,7 @@
     "axios": "^0.18.0",
     "dotenv": "^6.2.0",
     "github-api": "^3.2.0",
-    "mailbots": "^1.0.5",
+    "mailbots": "^2.0.0",
     "querystring": "^0.2.0",
     "turndown": "^5.0.3"
   },
