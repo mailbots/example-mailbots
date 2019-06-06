@@ -14,6 +14,8 @@ const onClose = require("./onClose");
 const onLabel = require("./onLabel");
 const onRemind = require("./onRemind");
 const markdown = require("./markdown");
+const onCreate = require("./onCreate");
+const onAddIssue = require("./onAddIssue");
 
 const githubCredentials = {
   clientId: process.env.GITHUB_CLIENT_ID,
@@ -120,6 +122,9 @@ mailbot.onTrigger("github", bot => {
   );
   bot.webhook.respond();
 });
+
+mailbot.onCommand("create", onCreate);
+mailbot.onAction(/addissueto.*/, onAddIssue);
 
 /******************************************************************************************
  *                                      Settings
