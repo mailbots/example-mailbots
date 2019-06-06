@@ -1,32 +1,33 @@
 const TurndownService = require("turndown");
-const axios = require("axios");
+const GitHub = require('github-api');
 
 module.exports = async bot => {
-  const githubToken = bot.get("mailbot.stored_data.github.token.access_token");
+  // fetch mailbot and task data
+  const githubInfo = bot.get("mailbot.stored_data.github");
   const issueInfo = bot.get("task.stored_data.issueInfo");
 
-  //the email html is the comment content
-  let comment = bot.get("source.html");
-
-  const turndownService = new TurndownService();
-
-  // turn the comment into markdown
-  comment = turndownService.turndown(comment);
-
-  // api call to github
-
-  const repoFullName = issueInfo.repository.full_name;
+  // get issue details
+  const repoName = issueInfo.repository.name;
   const issueNo = issueInfo.issue.number;
+  const username = issueInfo.sender.login;
 
-  await axios.post(
-    `https://api.github.com/repos/${repoFullName}/issues/${issueNo}/comments?access_token=${githubToken}`,
-    { body: comment }
-  );
+  // convert the html email into markdown
+  const commentHtml = bot.get("source.html");
+  const turndownService = new TurndownService();
+  const commentMd = turndownService.turndown(commentHtml);
 
+  // call github API
+  const github = new GitHub({
+    token: githubInfo.token.access_token
+  });
+  const issues = github.getIssues(username, repoName);
+  await issues.createIssueComment(issueNo, commentMd);
+
+  // respond to webhook
   bot.set("webhook.status", "info");
   bot.set(
     "webhook.message",
-    `Comment for issue #${issueNo} from ${repoFullName} was sent.`
+    `Comment for issue #${issueNo} from ${repoName} was sent.`
   );
   bot.webhook.respond();
 };

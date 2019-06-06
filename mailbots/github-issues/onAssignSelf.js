@@ -1,25 +1,27 @@
-const axios = require("axios");
+const GitHub = require('github-api');
 
 module.exports = async bot => {
-  const githubToken = bot.get("mailbot.stored_data.github.token.access_token");
+  // fetch mailbot and task data
+  const githubInfo = bot.get("mailbot.stored_data.github");
   const issueInfo = bot.get("task.stored_data.issueInfo");
 
-  const repoFullName = issueInfo.repository.full_name;
+  // get issue details
+  const repoName = issueInfo.repository.name;
   const issueNo = issueInfo.issue.number;
-  const login = issueInfo.issue.login;
+  const username = issueInfo.sender.login;
 
-  const { data: self } = await axios.get(
-    `https://api.github.com/user?access_token=${githubToken}`
-  );
+  // call github API
+  const github = new GitHub({
+    token: githubInfo.token.access_token
+  });
+  const issues = github.getIssues(username, repoName);
+  await issues.editIssue(issueNo, { assignees: [username] });
 
-  const url = `https://api.github.com/repos/${repoFullName}/issues/${issueNo}/assignees?access_token=${githubToken}`;
-
-  await axios.post(url, { assignees: [self.login] });
-
+  // respond to webhook
   bot.set("webhook.status", "info");
   bot.set(
     "webhook.message",
-    `Issue #${issueNo} from ${repoFullName} was assigned to ${login}.`
+    `Issue #${issueNo} from ${repoName} was assigned to ${username}.`
   );
   bot.webhook.respond();
 };

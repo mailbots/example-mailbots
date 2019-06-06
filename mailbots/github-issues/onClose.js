@@ -1,23 +1,30 @@
-const axios = require("axios");
+const GitHub = require('github-api');
 
 module.exports = async bot => {
-  const githubToken = bot.get("mailbot.stored_data.github.token.access_token");
+  // fetch mailbot and task data
+  const githubInfo = bot.get("mailbot.stored_data.github");
   const issueInfo = bot.get("task.stored_data.issueInfo");
 
-  const repoFullName = issueInfo.repository.full_name;
+  // get issue details
+  const repoName = issueInfo.repository.name;
   const issueNo = issueInfo.issue.number;
+  const username = issueInfo.sender.login;
 
-  const url = `https://api.github.com/repos/${repoFullName}/issues/${issueNo}?state=closed&access_token=${githubToken}`;
-
-  await axios.patch(url, { state: "closed" });
+  // call github API
+  const github = new GitHub({
+    token: githubInfo.token.access_token
+  });
+  const issues = github.getIssues(username, repoName);
+  await issues.editIssue(issueNo, { state: "closed" });
 
   // close this task
-  bot.webhook.completeTask();
+  // bot.webhook.completeTask();
 
+  // respond to webhook
   bot.set("webhook.status", "info");
   bot.set(
     "webhook.message",
-    `Issue #${issueNo} from ${repoFullName} was closed.`
+    `Issue #${issueNo} from ${repoName} was closed.`
   );
   bot.webhook.respond();
 };
