@@ -1,0 +1,29 @@
+{
+  "name": "example-ticket-mailbot",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "dev": "node --inspect-brk app.js"
+  },
+  "keywords": [
+    "bot",
+    "mailbot",
+    "email"
+  ],
+  "author": "Reilly Sweetland",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "@mailbots/mailbots-sdk": "^0.1.4-beta",
+    "axios": "^0.18.0",
+    "dotenv": "^6.2.0",
+    "github-api": "^3.2.0",
+    "mailbots": "^2.0.0",
+    "querystring": "^0.2.0",
+    "turndown": "^5.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
