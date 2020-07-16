@@ -16,7 +16,7 @@
   "dependencies": {
     "@mailbots/mailbots-sdk": "1.0.1",
     "dotenv": "^6.2.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "mailbots": "1.0.1",
     "promise-mysql": "^3.3.1",
     "request-promise": "^4.2.2"
